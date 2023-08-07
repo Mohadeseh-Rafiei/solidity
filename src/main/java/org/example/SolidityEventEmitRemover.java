@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SolidityEventEmitRemover extends SolidityBaseListener {
+    private ParseTree currentModifier;
 
     private ParseTreeProperty<ParseTree> modifiedTreeProperty;
 
@@ -22,9 +23,19 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
     }
 
     @Override
+    public void exitEventDefinition(SolidityParser.EventDefinitionContext ctx) {
+        currentModifier = ctx;
+    }
+
+    @Override
     public void enterEmitStatement(SolidityParser.EmitStatementContext ctx) {
         // Exclude emit statements from the modified AST
         modifiedTreeProperty.put(ctx, null);
+    }
+
+    @Override
+    public void exitEmitStatement(SolidityParser.EmitStatementContext ctx) {
+        currentModifier = ctx;
     }
 
     @Override
@@ -37,6 +48,7 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
         // Modify the function's children in the modified AST
         List<ParseTree> modifiedChildren = removeNulls(ctx.children);
         ctx.children = List.of(modifiedChildren.toArray(new ParseTree[0]));
+        currentModifier = ctx;
     }
 
     // Helper method to remove nulls from a list of children
@@ -45,7 +57,12 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
         return children;
     }
 
+    public void modifyParseTree(ParseTree originalTree, ParseTree modifiedTree) {
+        modifiedTreeProperty.put(originalTree, modifiedTree);
+    }
+
     public ParseTree getModifiedTree(ParseTree currentParseTree) {
+        modifyParseTree(currentParseTree, currentModifier);
         return modifiedTreeProperty.get(currentParseTree);
     }
 }

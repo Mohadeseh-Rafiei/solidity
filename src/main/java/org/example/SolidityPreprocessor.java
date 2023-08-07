@@ -18,6 +18,8 @@ public class SolidityPreprocessor {
 
         if(modifiedTree == null) {
             modifiedTree = tree;
+        } else {
+            tree = modifiedTree;
         }
 
         // Step 3: Remove events and emits
@@ -27,6 +29,8 @@ public class SolidityPreprocessor {
 
         if(modifiedTree == null) {
             modifiedTree = tree;
+        } else {
+            tree = modifiedTree;
         }
 
         // Step 4: Remove pure, view, and constant functions
@@ -36,6 +40,8 @@ public class SolidityPreprocessor {
 
         if(modifiedTree == null) {
             modifiedTree = tree;
+        } else {
+            tree = modifiedTree;
         }
 
         // Step 5: Remove interfaces
@@ -45,6 +51,8 @@ public class SolidityPreprocessor {
 
         if(modifiedTree == null) {
             modifiedTree = tree;
+        } else {
+            tree = modifiedTree;
         }
 
         // Step 6: Keep functions with important features
@@ -54,6 +62,8 @@ public class SolidityPreprocessor {
 
         if(modifiedTree == null) {
             modifiedTree = tree;
+        } else {
+            tree = modifiedTree;
         }
 
         SolidityCodeGenerator codeGenerator = new SolidityCodeGenerator(functionIdentifier.getImportantFunctions());

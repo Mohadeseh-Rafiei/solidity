@@ -4,9 +4,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SolidityModifierListener extends SolidityBaseListener {
 
     private ParseTreeProperty<ParseTree> modifiedTreeProperty = new ParseTreeProperty<>();
@@ -16,7 +13,6 @@ public class SolidityModifierListener extends SolidityBaseListener {
     public SolidityModifierListener(ParseTreeProperty<ParseTree> modifiedTreeProperty) {
         this.modifiedTreeProperty = modifiedTreeProperty;
     }
-
 
     @Override
     public void enterModifierDefinition(SolidityParser.ModifierDefinitionContext ctx) {
@@ -37,7 +33,12 @@ public class SolidityModifierListener extends SolidityBaseListener {
 
     // Add other methods to handle other continuation sections like 'else', 'while', etc.
 
+    public void modifyParseTree(ParseTree originalTree, ParseTree modifiedTree) {
+        modifiedTreeProperty.put(originalTree, modifiedTree);
+    }
+
     public ParseTree getModifiedTree(ParseTree currentParseTree) {
+        this.modifyParseTree(currentParseTree, currentModifier);
         return modifiedTreeProperty.get(currentParseTree);
     }
 }
