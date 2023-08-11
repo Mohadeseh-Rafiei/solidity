@@ -64,7 +64,7 @@ public class SolidityImportantFunctionIdentifier extends SolidityBaseListener {
         // It should recursively traverse the function call and its arguments to look for important features.
         // If any important feature is found, return true.
         // Otherwise, return false.
-        return false;
+        return true;
     }
 
     public ParseTree getModifiedTree(ParseTree currentParseTree) {
