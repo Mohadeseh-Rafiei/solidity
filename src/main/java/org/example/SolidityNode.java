@@ -21,14 +21,14 @@ public class SolidityNode {
         children.add(child);
     }
 
-    public boolean removeChild(SolidityNode child) {
-        for (SolidityNode node : children) {
+    public boolean removeChild(SolidityNode node) {
+        for (SolidityNode child : children) {
             if (Objects.equals(node.getText(), child.getText())) {
                 return children.remove(child);
             }
         }
-        for (SolidityNode node : children) {
-            if (node.removeChild(child)) {
+        for (SolidityNode child : children) {
+            if (child.removeChild(node)) {
                 return true;
             }
         }

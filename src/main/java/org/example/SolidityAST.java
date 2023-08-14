@@ -21,6 +21,7 @@ public class SolidityAST {
     }
 
     public void removeNode(SolidityNode node) {
+        System.out.println("Removing node: " + node.getText());
         root.removeChild(node);
     }
 }
