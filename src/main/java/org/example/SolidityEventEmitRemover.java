@@ -8,33 +8,40 @@ import java.util.List;
 import java.util.Objects;
 
 public class SolidityEventEmitRemover extends SolidityBaseListener {
-    private ParseTreeProperty<ParseTree> modifiedTreeProperty;
+    private ParseTree modifiedTree;
 
-    public SolidityEventEmitRemover(ParseTreeProperty<ParseTree> modifiedTreeProperty) {
-        this.modifiedTreeProperty = modifiedTreeProperty;
+    private SolidityAST ast;
+
+    private ParseTreeProperty<ParseTree> modifiedTreeProperty = new ParseTreeProperty<>();
+
+    public SolidityEventEmitRemover(ParseTree tree, SolidityAST ast) {
+        this.modifiedTree = tree;
+        this.ast = ast;
     }
 
     @Override
     public void enterEventDefinition(SolidityParser.EventDefinitionContext ctx) {
+        System.out.println("Enter event definition, ctx is: " + ctx.getText());
+
         // Exclude event declarations from the modified AST
-        modifiedTreeProperty.put(ctx, null);
+        SolidityNode currentNode = new SolidityNode(ctx);
+        ast.removeNode(currentNode);
     }
 
     @Override
     public void exitEventDefinition(SolidityParser.EventDefinitionContext ctx) {
-//         modifiedTreeProperty.put(ctx, ctx);
         System.out.println("Exit event definition");
     }
 
     @Override
     public void enterEmitStatement(SolidityParser.EmitStatementContext ctx) {
         // Exclude emit statements from the modified AST
-        modifiedTreeProperty.put(ctx, null);
+        SolidityNode currentNode = new SolidityNode(ctx);
+        ast.removeNode(currentNode);
     }
 
     @Override
     public void exitEmitStatement(SolidityParser.EmitStatementContext ctx) {
-//         modifiedTreeProperty.put(ctx, ctx);
         System.out.println("Exit emit definition");
     }
 
@@ -43,13 +50,13 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
 
     }
 
-    @Override
-    public void exitFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
-        // Modify the function's children in the modified AST
-        List<ParseTree> modifiedChildren = removeNulls(ctx.children);
-        ctx.children = List.of(modifiedChildren.toArray(new ParseTree[0]));
-        modifiedTreeProperty.put(ctx, ctx);
-    }
+//    @Override
+//    public void exitFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
+//        // Modify the function's children in the modified AST
+//        List<ParseTree> modifiedChildren = removeNulls(ctx.children);
+//        ctx.children = List.of(modifiedChildren.toArray(new ParseTree[0]));
+////        modifiedTreeProperty.put(ctx, ctx);
+//    }
 
     // Helper method to remove nulls from a list of children
     private List<ParseTree> removeNulls(List<ParseTree> children) {
@@ -57,8 +64,9 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
         return children;
     }
 
-    public ParseTree getModifiedTree(ParseTree currentParseTree) {
-        return modifiedTreeProperty.get(currentParseTree);
+    public SolidityAST getModifiedTree() {
+//        return modifiedTreeProperty.get(currentParseTree);
+        return this.ast;
     }
 }
 
