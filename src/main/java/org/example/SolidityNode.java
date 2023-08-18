@@ -21,6 +21,10 @@ public class SolidityNode {
         children.add(child);
     }
 
+    public List<SolidityNode> getChildren() {
+        return children;
+    }
+
     public boolean removeChild(SolidityNode node) {
         for (SolidityNode child : children) {
             if (Objects.equals(node.getText(), child.getText())) {
@@ -43,7 +47,7 @@ public class SolidityNode {
         }
         // Call getText recursively on children until there are no more children
         for (SolidityNode child : children) {
-            sb.append(child.getText());
+            sb.append(' ').append(child.getText());
         }
 
         return sb.toString();

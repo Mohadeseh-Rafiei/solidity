@@ -27,7 +27,7 @@ public class SolidityPreprocessor {
 //        }
 //
 //        // Step 3: Remove events and emits
-        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(tree, ast);
+        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
         ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
         SolidityAST modifiedAST = eventEmitRemover.getModifiedTree(); // Update modifiedTree
         return modifiedAST.getText();
