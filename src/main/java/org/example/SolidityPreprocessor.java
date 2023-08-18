@@ -2,78 +2,96 @@ package org.example;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import java.util.List;
+
 public class SolidityPreprocessor {
     public static String preprocessSolidity(String solidityCode) {
         SolidityLexer lexer = new SolidityLexer(CharStreams.fromString(solidityCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
         SolidityParser parser = new SolidityParser(tokens);
         ParseTree tree = parser.sourceUnit(); // Obtain the root of the parse tree after parsing
 
-        ParseTreeProperty<ParseTree> modifiedTreeProperty = new ParseTreeProperty<>();
+        // Step 1: Make AST
+        SolidityAST ast = new SolidityAST(tree);
 
         // Step 2: Handle modifiers and continuation sections
-        SolidityModifierListener modifierListener = new SolidityModifierListener(modifiedTreeProperty);
-        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
-        ParseTree modifiedTree = modifierListener.getModifiedTree(tree);// Update modifiedTree
+//        SolidityModifierListener modifierListener = new SolidityModifierListener(modifiedTreeProperty);
+//        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
+//        ParseTree modifiedTree = modifierListener.getModifiedTree(tree);// Update modifiedTree
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+//        // Step 3: Remove events and emits
+        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
+        SolidityAST modifiedAST = eventEmitRemover.getModifiedTree(); // Update modifiedTree
+        return modifiedAST.getText();
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+//        // Step 4: Remove pure, view, and constant functions
+//        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(modifiedTreeProperty);
+//        ParseTreeWalker.DEFAULT.walk(functionRemover, modifiedTree);
+//        modifiedTree = functionRemover.getModifiedTree(modifiedTree); // Update modifiedTree
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+//        // Step 5: Remove interfaces
+//        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(modifiedTreeProperty);
+//        ParseTreeWalker.DEFAULT.walk(interfaceRemover, modifiedTree);
+//        modifiedTree = interfaceRemover.getModifiedTree(modifiedTree); // Update modifiedTree
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+//        // Step 6: Keep functions with important features
+//        SolidityImportantFunctionIdentifier functionIdentifier = new SolidityImportantFunctionIdentifier(modifiedTreeProperty);
+//        ParseTreeWalker.DEFAULT.walk(functionIdentifier, modifiedTree);
+//        modifiedTree = functionIdentifier.getModifiedTree(modifiedTree); // Update modifiedTree
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+//        SolidityCodeGenerator codeGenerator = new SolidityCodeGenerator(functionIdentifier.getImportantFunctions());
+//        ParseTreeWalker walker = new ParseTreeWalker();
+//        walker.walk(codeGenerator, modifiedTree); // Walk the modified tree with our generator
+//
+//        // Get the final modified Solidity code
+//        String modifiedCode = codeGenerator.getModifiedCode(); // Use getModifiedCode here
+//        System.out.println(modifiedCode);
+//        return modifiedCode;
 
-        if(modifiedTree == null) {
-            modifiedTree = tree;
-        } else {
-            tree = modifiedTree;
+//        ParseTreeWalker walker = new ParseTreeWalker();
+//        SolidityParser.SourceUnitContext modifiedTreeRoot = parser.sourceUnit();
+//        walker.walk(eventEmitRemover, modifiedTreeRoot);
+//        return tokensToString(modifiedTree);
+    }
+
+    private static String tokensToString(List<CommonToken> tokens) {
+        StringBuilder builder = new StringBuilder();
+        for (CommonToken token : tokens) {
+            builder.append(token.getText());
         }
-
-        // Step 3: Remove events and emits
-        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(modifiedTreeProperty);
-        ParseTreeWalker.DEFAULT.walk(eventEmitRemover, modifiedTree);
-        modifiedTree = eventEmitRemover.getModifiedTree(modifiedTree); // Update modifiedTree
-
-        if(modifiedTree == null) {
-            modifiedTree = tree;
-        } else {
-            tree = modifiedTree;
-        }
-
-        // Step 4: Remove pure, view, and constant functions
-        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(modifiedTreeProperty);
-        ParseTreeWalker.DEFAULT.walk(functionRemover, modifiedTree);
-        modifiedTree = functionRemover.getModifiedTree(modifiedTree); // Update modifiedTree
-
-        if(modifiedTree == null) {
-            modifiedTree = tree;
-        } else {
-            tree = modifiedTree;
-        }
-
-        // Step 5: Remove interfaces
-        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(modifiedTreeProperty);
-        ParseTreeWalker.DEFAULT.walk(interfaceRemover, modifiedTree);
-        modifiedTree = interfaceRemover.getModifiedTree(modifiedTree); // Update modifiedTree
-
-        if(modifiedTree == null) {
-            modifiedTree = tree;
-        } else {
-            tree = modifiedTree;
-        }
-
-        // Step 6: Keep functions with important features
-        SolidityImportantFunctionIdentifier functionIdentifier = new SolidityImportantFunctionIdentifier(modifiedTreeProperty);
-        ParseTreeWalker.DEFAULT.walk(functionIdentifier, modifiedTree);
-        modifiedTree = functionIdentifier.getModifiedTree(modifiedTree); // Update modifiedTree
-
-        if(modifiedTree == null) {
-            modifiedTree = tree;
-        } else {
-            tree = modifiedTree;
-        }
-
-        SolidityCodeGenerator codeGenerator = new SolidityCodeGenerator(functionIdentifier.getImportantFunctions());
-        ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(codeGenerator, modifiedTree); // Walk the modified tree with our generator
-
-        // Get the final modified Solidity code
-        String modifiedCode = codeGenerator.getModifiedCode(); // Use getModifiedCode here
-        System.out.println(modifiedCode);
-        return modifiedCode;
+        return builder.toString();
     }
 
 
