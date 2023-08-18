@@ -7,10 +7,29 @@ import java.util.Objects;
 
 public class SolidityNode {
     private final ParseTree node;
+    private final SolidityNode parent;
     private final List<SolidityNode> children = new ArrayList<>();
 
-    public SolidityNode(ParseTree node) {
+    public SolidityNode(ParseTree node, SolidityNode parent) {
         this.node = node;
+        this.parent = parent;
+    }
+
+    public SolidityNode getParent() {
+        return parent;
+    }
+
+    public SolidityNode findNode(String text) {
+        if (Objects.equals(node.getText(), text)) {
+            return this;
+        }
+        for (SolidityNode child : children) {
+            SolidityNode temp = child.findNode(text);
+            if (temp != null) {
+                return temp;
+            }
+        }
+        return null;
     }
 
     public ParseTree getNode() {
@@ -47,14 +66,14 @@ public class SolidityNode {
         }
         // Call getText recursively on children until there are no more children
         for (SolidityNode child : children) {
-            sb.append(' ').append(child.getText());
+            sb.append(child.getText());
         }
 
         return sb.toString();
     }
 
     public void addChildFromParseTree(ParseTree child) {
-        SolidityNode childNode = new SolidityNode(child);
+        SolidityNode childNode = new SolidityNode(child, this);
         for (int i = 0; i < child.getChildCount(); i++) {
             childNode.addChildFromParseTree(child.getChild(i));
         }

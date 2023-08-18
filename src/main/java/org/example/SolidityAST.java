@@ -6,10 +6,14 @@ public class SolidityAST {
     private final SolidityNode root;
 
     public SolidityAST(ParseTree root) {
-        this.root = new SolidityNode(root);
+        this.root = new SolidityNode(root, null);
         for (int i = 0; i < root.getChildCount(); i++) {
             this.root.addChildFromParseTree(root.getChild(i));
         }
+    }
+
+    public SolidityNode findNode(String text) {
+        return root.findNode(text);
     }
 
     public SolidityNode getRoot() {
