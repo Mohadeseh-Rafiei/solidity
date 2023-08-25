@@ -30,29 +30,30 @@ public class SolidityPreprocessor {
         SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
         ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
         SolidityAST modifiedAST = eventEmitRemover.getModifiedTree(); // Update modifiedTree
+//
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+        // Step 4: Remove pure, view, and constant functions
+        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(functionRemover, tree);
+        modifiedAST = functionRemover.getModifiedTree(); // Update modifiedTree
+
+//        if(modifiedTree == null) {
+//            modifiedTree = tree;
+//        } else {
+//            tree = modifiedTree;
+//        }
+//
+        // Step 5: Remove interfaces
+        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(interfaceRemover, tree);
+        modifiedAST = interfaceRemover.getModifiedTree(); // Update modifiedTree
         return modifiedAST.getText();
-//
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
-//        // Step 4: Remove pure, view, and constant functions
-//        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(modifiedTreeProperty);
-//        ParseTreeWalker.DEFAULT.walk(functionRemover, modifiedTree);
-//        modifiedTree = functionRemover.getModifiedTree(modifiedTree); // Update modifiedTree
-//
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
-//        // Step 5: Remove interfaces
-//        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(modifiedTreeProperty);
-//        ParseTreeWalker.DEFAULT.walk(interfaceRemover, modifiedTree);
-//        modifiedTree = interfaceRemover.getModifiedTree(modifiedTree); // Update modifiedTree
+
 //
 //        if(modifiedTree == null) {
 //            modifiedTree = tree;

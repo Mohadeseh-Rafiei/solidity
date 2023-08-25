@@ -1,33 +1,46 @@
 package org.example;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SolidityFunctionRemover extends SolidityBaseListener {
 
-    private final ParseTreeProperty<ParseTree> modifiedTreeProperty;
-    private final Set<String> excludedModifiers = new HashSet<>(Arrays.asList("pure", "view", "constant"));
+    private final SolidityAST ast;
+    private List<String> functions = new ArrayList<>();
 
-    public SolidityFunctionRemover(ParseTreeProperty<ParseTree> modifiedTreeProperty) {
-        this.modifiedTreeProperty = modifiedTreeProperty;
+    public SolidityFunctionRemover(SolidityAST ast) {
+        this.ast = ast;
     }
 
 
     @Override
     public void enterFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
-        // Check if the function has excluded modifiers
-        if (hasExcludedModifier(ctx)) {
-            // Exclude functions with excluded modifiers from the modified AST
-            modifiedTreeProperty.put(ctx, null);
-        } else {
-            // Include other functions in the modified AST
-            modifiedTreeProperty.put(ctx, ctx);
+        System.out.println("Enter function definition, ctx is: " + ctx.getText());
+
+        String mod = ctx.modifierList().getText();
+        if(mod.equals("pure") || mod.equals("view") || mod.equals("constant") || mod.equals("externalconstant") || mod.equals("constantreturns") || mod.equals("externalconstantreturns")) {
+            SolidityNode currentNode = new SolidityNode(ctx, null);
+            System.out.println("added node to list:" + extractFunctionName(currentNode.getText()));
+            functions.add(extractFunctionName(currentNode.getText()));
+            ast.removeNode(currentNode);
         }
+    }
+
+    private static String extractFunctionName(String input) {
+        String functionName = null;
+        Pattern pattern = Pattern.compile("function(\\w+)\\(");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            functionName = matcher.group(1);
+        }
+        return functionName;
+    }
+
+    @Override
+    public void exitFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
+	     System.out.println("Exit event definition");
     }
 
     @Override
@@ -35,40 +48,23 @@ public class SolidityFunctionRemover extends SolidityBaseListener {
 
     }
 
-    private boolean hasExcludedModifier(SolidityParser.FunctionDefinitionContext ctx) {
-        SolidityParser.ModifierListContext modifierListContext = ctx.modifierList();
-        if (modifierListContext != null) {
-            for (int i = 0; i < modifierListContext.getChildCount(); i++) {
-                ParseTree child = modifierListContext.getChild(i);
-                if (child instanceof ParserRuleContext) {
-                    ParserRuleContext childContext = (ParserRuleContext) child;
-                    String modifierName = childContext.getText();
-                    if (excludedModifiers.contains(modifierName)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public ParseTree getModifiedTree(ParseTree currentParseTree) {
-        return modifiedTreeProperty.get(currentParseTree);
-    }
-
     // Helper method to traverse the original parse tree and construct the modified parse tree
-    public void constructModifiedTree(ParseTree originalNode, ParseTree modifiedNode) {
-        if (originalNode.getChildCount() != modifiedNode.getChildCount()) {
-            throw new IllegalArgumentException("Children count mismatch between original and modified parse trees.");
-        }
+    public SolidityAST getModifiedTree() {
+        findAndRemoveAllEventCalls();
+        return this.ast;
+    }
 
-        for (int i = 0; i < originalNode.getChildCount(); i++) {
-            ParseTree originalChild = originalNode.getChild(i);
-            ParseTree modifiedChild = modifiedNode.getChild(i);
-
-            modifiedTreeProperty.put(modifiedChild, modifiedChild);
-
-            constructModifiedTree(originalChild, modifiedChild);
+    private void findAndRemoveAllEventCalls() {
+        for(String function : functions) {
+            while (true) {
+                SolidityNode foundedNode = ast.findNode(function);
+                if (foundedNode == null) {
+                    break;
+                }
+                SolidityNode parent = foundedNode.getParent().getParent();
+                System.out.println("Usage of function: " + parent.getText());
+                ast.removeNode(parent);
+            }
         }
     }
 }

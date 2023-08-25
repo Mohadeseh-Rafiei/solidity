@@ -1,33 +1,28 @@
 package org.example;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.Map;
 
 public class SolidityInterfaceRemover extends SolidityBaseListener {
 
-    private ParseTreeProperty<ParseTree> modifiedTreeProperty;
+    private final  SolidityAST ast;
+    private Map<String, SolidityNode> interfaces;
 
-    public SolidityInterfaceRemover(ParseTreeProperty<ParseTree> modifiedTreeProperty) {
-        this.modifiedTreeProperty = modifiedTreeProperty;
+    public SolidityInterfaceRemover(SolidityAST ast) {
+        this.ast = ast;
     }
 
-    public ParseTree getModifiedTree(ParseTree currentParseTree) {
-        return modifiedTreeProperty.get(currentParseTree);
+    public SolidityAST getModifiedTree() {
+        return this.ast;
     }
 
-    // Helper method to traverse the original parse tree and construct the modified parse tree
-    public void constructModifiedTree(ParseTree originalNode, ParseTree modifiedNode) {
-        if (originalNode.getChildCount() != modifiedNode.getChildCount()) {
-            throw new IllegalArgumentException("Children count mismatch between original and modified parse trees.");
-        }
-
-        for (int i = 0; i < originalNode.getChildCount(); i++) {
-            ParseTree originalChild = originalNode.getChild(i);
-            ParseTree modifiedChild = modifiedNode.getChild(i);
-
-            modifiedTreeProperty.put(modifiedChild, modifiedChild);
-
-            constructModifiedTree(originalChild, modifiedChild);
+    @Override
+    public void enterFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
+        SolidityNode currentNode = new SolidityNode(ctx, null);
+        // Remove all function definitions within the interface
+        System.out.println("Enter function definition, ctx is: " + ctx.getText());
+        if(currentNode.findNode("{") == null) {
+            ast.removeNode(currentNode);
         }
     }
 
