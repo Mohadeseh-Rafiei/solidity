@@ -7,9 +7,7 @@ public class SolidityAST {
 
     public SolidityAST(ParseTree root) {
         this.root = new SolidityNode(root, null);
-        for (int i = 0; i < root.getChildCount(); i++) {
-            this.root.addChildFromParseTree(root.getChild(i));
-        }
+        this.root.addChildren(root);
     }
 
     public SolidityNode findNode(String text) {
