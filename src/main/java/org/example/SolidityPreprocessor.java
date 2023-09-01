@@ -34,12 +34,13 @@ public class SolidityPreprocessor {
         SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(ast);
         ParseTreeWalker.DEFAULT.walk(interfaceRemover, tree);
         ast = interfaceRemover.getModifiedTree(); // Update modifiedTree
-        return ast.getText();
 
-//        // Step 6: Keep functions with important features
-//        SolidityImportantFunctionIdentifier functionIdentifier = new SolidityImportantFunctionIdentifier(modifiedTreeProperty);
-//        ParseTreeWalker.DEFAULT.walk(functionIdentifier, modifiedTree);
-//        modifiedTree = functionIdentifier.getModifiedTree(modifiedTree); // Update modifiedTree
+        // Step 6: Keep functions with important features
+        cleanCode codeCleaner = new cleanCode(ast);
+//        ParseTreeWalker.DEFAULT.walk(functionIdentifier, tree);
+        ast = codeCleaner.getModifiedTree(); // Update modifiedTree
+
+        return ast.getText();
 //
 //        if(modifiedTree == null) {
 //            modifiedTree = tree;

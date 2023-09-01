@@ -44,6 +44,22 @@ public class SolidityNode {
         return null;
     }
 
+    public SolidityNode findExistInNode(String text) {
+        for (SolidityNode child : children) {
+            SolidityNode temp = child.findExistInNode(text);
+            if (temp != null) {
+                return temp;
+            }
+        }
+
+        System.out.println("node text: " + this.getText());
+        if (this.getText().contains(text)) {
+            return this;
+        }
+
+        return null;
+    }
+
     public boolean addAfter(String text, SolidityNode node) {
         for (int i = 0; i < children.size(); i++) {
             if (Objects.equals(children.get(i).getText(), text)) {

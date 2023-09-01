@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class SolidityEventEmitRemover extends SolidityBaseListener {
     private final SolidityAST ast;
 
-    private List<String> events = new ArrayList<>();
+    private final List<String> events = new ArrayList<>();
 
 
     public SolidityEventEmitRemover(SolidityAST ast) {

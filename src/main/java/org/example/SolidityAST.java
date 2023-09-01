@@ -14,6 +14,10 @@ public class SolidityAST {
         return root.findNode(text);
     }
 
+    public SolidityNode findExistInNode(String text) {
+        return root.findExistInNode(text);
+    }
+
     public SolidityNode getRoot() {
         return root;
     }
