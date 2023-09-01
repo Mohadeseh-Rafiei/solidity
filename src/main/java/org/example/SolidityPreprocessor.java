@@ -16,51 +16,26 @@ public class SolidityPreprocessor {
         SolidityAST ast = new SolidityAST(tree);
 
         // Step 2: Handle modifiers and continuation sections
-//        SolidityModifierListener modifierListener = new SolidityModifierListener(modifiedTreeProperty);
-//        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
-//        ParseTree modifiedTree = modifierListener.getModifiedTree(tree);// Update modifiedTree
-//
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
-//        // Step 3: Remove events and emits
+        SolidityModifierListener modifierListener = new SolidityModifierListener(ast);
+        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
+        ast = modifierListener.getModifiedTree();// Update modifiedTree
+
+        // Step 3: Remove events and emits
         SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
         ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
-        SolidityAST modifiedAST = eventEmitRemover.getModifiedTree(); // Update modifiedTree
-//
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
+        ast = eventEmitRemover.getModifiedTree(); // Update modifiedTree
+
         // Step 4: Remove pure, view, and constant functions
         SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(ast);
         ParseTreeWalker.DEFAULT.walk(functionRemover, tree);
-        modifiedAST = functionRemover.getModifiedTree(); // Update modifiedTree
+        ast = functionRemover.getModifiedTree(); // Update modifiedTree
 
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
         // Step 5: Remove interfaces
         SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(ast);
         ParseTreeWalker.DEFAULT.walk(interfaceRemover, tree);
-        modifiedAST = interfaceRemover.getModifiedTree(); // Update modifiedTree
-        return modifiedAST.getText();
+        ast = interfaceRemover.getModifiedTree(); // Update modifiedTree
+        return ast.getText();
 
-//
-//        if(modifiedTree == null) {
-//            modifiedTree = tree;
-//        } else {
-//            tree = modifiedTree;
-//        }
-//
 //        // Step 6: Keep functions with important features
 //        SolidityImportantFunctionIdentifier functionIdentifier = new SolidityImportantFunctionIdentifier(modifiedTreeProperty);
 //        ParseTreeWalker.DEFAULT.walk(functionIdentifier, modifiedTree);
