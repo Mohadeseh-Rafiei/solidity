@@ -19,24 +19,24 @@ public class SolidityPreprocessor {
         SolidityAST ast = new SolidityAST(tree);
 
         // Step 2: Handle modifiers and continuation sections
-//        SolidityModifierListener modifierListener = new SolidityModifierListener(ast);
-//        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
-//        ast = modifierListener.getModifiedTree();// Update modifiedTree
-//
-//        // Step 3: Remove events and emits
-//        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
-//        ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
-//        ast = eventEmitRemover.getModifiedTree(); // Update modifiedTree
-//
-//        // Step 4: Remove pure, view, and constant functions
-//        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(ast);
-//        ParseTreeWalker.DEFAULT.walk(functionRemover, tree);
-//        ast = functionRemover.getModifiedTree(); // Update modifiedTree
-//
-//        // Step 5: Remove interfaces
-//        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(ast);
-//        ParseTreeWalker.DEFAULT.walk(interfaceRemover, tree);
-//        ast = interfaceRemover.getModifiedTree(); // Update modifiedTree
+        SolidityModifierListener modifierListener = new SolidityModifierListener(ast);
+        ParseTreeWalker.DEFAULT.walk(modifierListener, tree);
+        ast = modifierListener.getModifiedTree();// Update modifiedTree
+
+        // Step 3: Remove events and emits
+        SolidityEventEmitRemover eventEmitRemover = new SolidityEventEmitRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(eventEmitRemover, tree);
+        ast = eventEmitRemover.getModifiedTree(); // Update modifiedTree
+
+        // Step 4: Remove pure, view, and constant functions
+        SolidityFunctionRemover functionRemover = new SolidityFunctionRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(functionRemover, tree);
+        ast = functionRemover.getModifiedTree(); // Update modifiedTree
+
+        // Step 5: Remove interfaces
+        SolidityInterfaceRemover interfaceRemover = new SolidityInterfaceRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(interfaceRemover, tree);
+        ast = interfaceRemover.getModifiedTree(); // Update modifiedTree
 
         SolidityAssemblyRemover assemblyRemover = new SolidityAssemblyRemover(ast);
         ParseTreeWalker.DEFAULT.walk(assemblyRemover, tree);
