@@ -15,13 +15,7 @@ public class SolidityAssemblyRemover extends SolidityBaseListener{
     }
 
     @Override
-    public void enterAssemblyBlock(SolidityParser.AssemblyBlockContext ctx) {
-        System.out.println("Enter assembly function definition, ctx is: " + ctx.getText());
-
-        SolidityNode currentNode = new SolidityNode(ctx, null);
-        System.out.println("Remove assembly node: " + ctx.getText());
-        ast.removeNode(currentNode);
-    }
+    public void enterAssemblyBlock(SolidityParser.AssemblyBlockContext ctx) {}
 
     @Override
     public void enterTerminal(TerminalNode node) {
@@ -29,6 +23,15 @@ public class SolidityAssemblyRemover extends SolidityBaseListener{
     }
 
     public SolidityAST getModifiedTree() {
+        while (true) {
+            SolidityNode foundedNode = ast.findNode("assembly");
+            if (foundedNode == null) {
+                break;
+            }
+            SolidityNode parent = foundedNode.getParent();
+            System.out.println("founded assembly node: " + parent.getText());
+            ast.removeNode(parent);
+        }
         return this.ast;
     }
 }
