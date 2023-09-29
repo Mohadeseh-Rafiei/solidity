@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SolidityNode {
     private final ParseTree node;
@@ -52,7 +54,6 @@ public class SolidityNode {
             }
         }
 
-        System.out.println("node text: " + this.getText());
         if (this.getText().contains(text)) {
             return this;
         }
@@ -116,6 +117,25 @@ public class SolidityNode {
         return sb.toString();
     }
 
+    public String getTextWithDelimiter() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+
+        if (children.isEmpty()) {
+            return node.getText();
+        }
+        // Call getText recursively on children until there are no more children
+        for (SolidityNode child : children) {
+            if(i != 0) {
+                sb.append(" ");
+            }
+            sb.append(child.getText());
+            i++;
+        }
+
+        return sb.toString();
+    }
+
     public void addChildFromParseTree(ParseTree child) {
         SolidityNode childNode = new SolidityNode(child, this);
         for (int i = 0; i < child.getChildCount(); i++) {
@@ -130,5 +150,41 @@ public class SolidityNode {
         SolidityParser parser = new SolidityParser(tokens);
         ParseTree tree = parser.sourceUnit();
         return new SolidityNode(tree, null);
+    }
+
+    public boolean findRegex(String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.getTextWithDelimiter());
+        return  matcher.find();
+    }
+
+    public SolidityNode findNodeWithDelimiter(String text) {
+        for (SolidityNode child : children) {
+            SolidityNode temp = child.findNodeWithDelimiter(text);
+            if (temp != null) {
+                return temp;
+            }
+        }
+
+        if (this.findRegex(text)) {
+            return this;
+        }
+
+        return null;
+    }
+
+    public List<SolidityNode> findAllNodes(String text) {
+        List<SolidityNode> nodes = new ArrayList<>();
+        if (Objects.equals(node.getText(), text)) {
+            nodes.add(this);
+            return nodes;
+        }
+        for (SolidityNode child : children) {
+            List<SolidityNode> temp = child.findAllNodes(text);
+            if (temp != null) {
+                nodes.addAll(temp);
+            }
+        }
+        return nodes;
     }
 }

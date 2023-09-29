@@ -42,19 +42,18 @@ public class SolidityPreprocessor {
         ParseTreeWalker.DEFAULT.walk(assemblyRemover, tree);
         ast = assemblyRemover.getModifiedTree();
 
+        SolidityTokenRemover tokenRemover = new SolidityTokenRemover(ast);
+        ParseTreeWalker.DEFAULT.walk(tokenRemover, tree);
+        ast = tokenRemover.getModifiedTree();
+
         // Step 6: Keep functions with important features
         cleanCode codeCleaner = new cleanCode(ast);
         ast = codeCleaner.getModifiedTree(); // Update modifiedTree
 
-        return ast.getText();
-    }
+        SolidityCommentRemover commentRemover = new SolidityCommentRemover(ast);
+        ast = commentRemover.getModifiedTree();
 
-    private static String tokensToString(List<CommonToken> tokens) {
-        StringBuilder builder = new StringBuilder();
-        for (CommonToken token : tokens) {
-            builder.append(token.getText());
-        }
-        return builder.toString();
+        return ast.getText();
     }
 
 

@@ -21,10 +21,23 @@ public class cleanCode extends SolidityBaseListener {
 
     }
 
+    public void contractInterfaceRemover() {
+        List<SolidityNode> foundedNodes = this.ast.findAllNodes("contract");
+
+        for (SolidityNode foundedNode : foundedNodes) {
+            SolidityNode parent = foundedNode.getParent();
+            System.out.println("interface contract parent: " + parent.getText());
+            if (parent.findExistInNode("(") == null) {
+                this.ast.removeNode(parent);
+            }
+        }
+    }
+
     public void removeEmptyContracts() {
         while (true) {
             SolidityNode foundedNode = this.ast.findExistInNode("{}");
             if(foundedNode == null) {
+                this.contractInterfaceRemover();
                 return;
             }
             this.ast.removeNode(foundedNode);

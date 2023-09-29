@@ -2,6 +2,8 @@ package org.example;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.List;
+
 public class SolidityAST {
     private final SolidityNode root;
 
@@ -29,5 +31,13 @@ public class SolidityAST {
     public void removeNode(SolidityNode node) {
         System.out.println("Removing node: " + node.getText());
         root.removeChild(node);
+    }
+
+    public SolidityNode findNodeWithDelimiter(String text) {
+        return root.findNodeWithDelimiter(text);
+    }
+
+    public List<SolidityNode> findAllNodes(String text) {
+        return root.findAllNodes(text);
     }
 }
