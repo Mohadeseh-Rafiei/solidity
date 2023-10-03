@@ -1,5 +1,4 @@
 package org.example;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -9,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class SolidityPreprocessor {
-    public static String preprocessSolidity(String solidityCode) throws JsonProcessingException {
+    public static String preprocessSolidity(String solidityCode) {
         SolidityLexer lexer = new SolidityLexer(CharStreams.fromString(solidityCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -50,12 +49,15 @@ public class SolidityPreprocessor {
         SolidityConstantRemover constantRemover = new SolidityConstantRemover(ast);
         ast = constantRemover.getModifiedTree();
 
-        // Step 6: Keep functions with important features
         cleanCode codeCleaner = new cleanCode(ast);
         ast = codeCleaner.getModifiedTree(); // Update modifiedTree
 
         SolidityCommentRemover commentRemover = new SolidityCommentRemover(ast);
         ast = commentRemover.getModifiedTree();
+
+        // Step 6: Keep functions with important features
+        SolidityFunctionKeeper functionKeeper = new SolidityFunctionKeeper(ast);
+        List<SolidityNode> importantFunctions = functionKeeper.getImportantFunctions();
 
         return Prettifier.prettify(ast);
     }
@@ -63,8 +65,8 @@ public class SolidityPreprocessor {
 
     public static void main(String[] args) {
         // Sample Solidity code
-        String filePath = "/Users/mohadese.rafiei/IdeaProjects/solidity/src/main/java/org/example/SpankChain.sol";
-        String destinationPath = "/Users/mohadese.rafiei/IdeaProjects/solidity/src/main/java/org/example/spankChainOut.sol";
+        String filePath = "/Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/SpankChain.sol";
+        String destinationPath = "/Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/spankChainOut.sol";
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
             String modifiedCode = preprocessSolidity(solidityCode);
