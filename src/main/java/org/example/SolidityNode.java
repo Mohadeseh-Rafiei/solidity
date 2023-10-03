@@ -187,4 +187,31 @@ public class SolidityNode {
         }
         return nodes;
     }
+
+    public String prettyText() {
+        StringBuilder sb = new StringBuilder();
+
+        if (children.isEmpty()) {
+            String text =  node.getText();
+            if(Objects.equals(text, ";")) {
+                return ";\n";
+            }
+            if(Objects.equals(text, "{")) {
+                return "{\n";
+            }
+            if(Objects.equals(text, "}")) {
+                return "}\n";
+            }
+            return text;
+        }
+        // Call getText recursively on children until there are no more children
+        for (SolidityNode child : children) {
+            if(sb.length() > 0 && sb.charAt(sb.length()-1) != ' ') {
+                sb.append(' ');
+            }
+            sb.append(child.prettyText());
+        }
+
+        return sb.toString();
+    }
 }

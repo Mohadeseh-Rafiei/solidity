@@ -1,4 +1,5 @@
 package org.example;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -8,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class SolidityPreprocessor {
-    public static String preprocessSolidity(String solidityCode) {
+    public static String preprocessSolidity(String solidityCode) throws JsonProcessingException {
         SolidityLexer lexer = new SolidityLexer(CharStreams.fromString(solidityCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -46,6 +47,9 @@ public class SolidityPreprocessor {
         ParseTreeWalker.DEFAULT.walk(tokenRemover, tree);
         ast = tokenRemover.getModifiedTree();
 
+        SolidityConstantRemover constantRemover = new SolidityConstantRemover(ast);
+        ast = constantRemover.getModifiedTree();
+
         // Step 6: Keep functions with important features
         cleanCode codeCleaner = new cleanCode(ast);
         ast = codeCleaner.getModifiedTree(); // Update modifiedTree
@@ -53,7 +57,7 @@ public class SolidityPreprocessor {
         SolidityCommentRemover commentRemover = new SolidityCommentRemover(ast);
         ast = commentRemover.getModifiedTree();
 
-        return ast.getText();
+        return Prettifier.prettify(ast);
     }
 
 
@@ -65,7 +69,6 @@ public class SolidityPreprocessor {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
             String modifiedCode = preprocessSolidity(solidityCode);
 
-            System.out.println(modifiedCode);
             Files.write(Paths.get(destinationPath), modifiedCode.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
