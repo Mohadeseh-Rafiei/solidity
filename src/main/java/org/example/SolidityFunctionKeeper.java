@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SolidityFunctionKeeper {
@@ -11,14 +12,43 @@ public class SolidityFunctionKeeper {
         this.ast = ast;
     }
 
-    public void findAllImportantFunctions() {
+    private void findAllImportantFunctions() {
         System.out.println("Finding all important functions");
-        findFunctionsWithTransferCalls();
-        findFunctionsWithTXOrigin();
-        findFunctionsWithDeligateCall();
+        this.findFunctionsWithTransferCalls();
+        this.findFunctionsWithTXOrigin();
+        this.findFunctionsWithDeligateCall();
+        this.importantFunctions.addAll(this.addNewFunctionsFromImportantFunctions(this.importantFunctions));
     }
 
-    public void findFunctionsWithTransferCalls() {
+    private List<SolidityNode> addNewFunctionsFromImportantFunctions(List<SolidityNode> inputFunctions) {
+        List<SolidityNode> newFunctions = new ArrayList<>();
+        for (SolidityNode function : inputFunctions) {
+            List<String> functionNames = this.getUsedFunctionNames(function);
+            for (String functionName : functionNames) {
+                SolidityNode foundedFunction = this.findFunctionByName(functionName);
+                if (foundedFunction != null) {
+                    newFunctions.add(foundedFunction);
+                    this.ast.removeNode(foundedFunction);
+                }
+            }
+        }
+        if (newFunctions.size() > 0) {
+            newFunctions.addAll(this.addNewFunctionsFromImportantFunctions(newFunctions));
+        }
+        return newFunctions;
+    }
+
+    private List<String> getUsedFunctionNames(SolidityNode function) {
+        List<String> functionNames = new ArrayList<>();
+        // todo: find used function names in function
+        return functionNames;
+    }
+
+    private SolidityNode findFunctionByName(String functionName) {
+        return this.ast.findExistInNode("function" + functionName);
+    }
+
+    private void findFunctionsWithTransferCalls() {
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode(".send(");
             if (foundedNode == null) {
@@ -51,7 +81,7 @@ public class SolidityFunctionKeeper {
         }
     }
 
-    public void findFunctionsWithTXOrigin() {
+    private void findFunctionsWithTXOrigin() {
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode("tx.origin");
             if (foundedNode == null) {
@@ -64,7 +94,7 @@ public class SolidityFunctionKeeper {
         }
     }
 
-    public void findFunctionsWithDeligateCall() {
+    private void findFunctionsWithDeligateCall() {
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode("delegatecall");
             if (foundedNode == null) {
@@ -77,7 +107,7 @@ public class SolidityFunctionKeeper {
         }
     }
 
-    public SolidityNode getFunction(SolidityNode node) {
+    private SolidityNode getFunction(SolidityNode node) {
         if(node.getChildren().get(0).getText().equals("function")) {
             return node;
         }
