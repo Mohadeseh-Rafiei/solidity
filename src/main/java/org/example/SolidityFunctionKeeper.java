@@ -20,14 +20,34 @@ public class SolidityFunctionKeeper {
 
     public void findFunctionsWithTransferCalls() {
         while (true) {
-            // todo: find all transfer calls
-            SolidityNode foundedNode = ast.findExistInNode("_to.call");
+            SolidityNode foundedNode = ast.findExistInNode(".send(");
             if (foundedNode == null) {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded transfer node: " + function.getText());
+            System.out.println("founded function with .send( text: " + function.getText());
             this.importantFunctions.add(function);
+            this.ast.removeNode(function);
+        }
+        while (true) {
+            SolidityNode foundedNode = ast.findExistInNode(".call{");
+            if (foundedNode == null) {
+                break;
+            }
+            SolidityNode function = getFunction(foundedNode);
+            System.out.println("founded function with .call{ text: " + function.getText());
+            this.importantFunctions.add(function);
+            this.ast.removeNode(function);
+        }
+        while (true) {
+            SolidityNode foundedNode = ast.findExistInNode(".transfer(");
+            if (foundedNode == null) {
+                break;
+            }
+            SolidityNode function = getFunction(foundedNode);
+            System.out.println("founded function with .transfer( text: " + function.getText());
+            this.importantFunctions.add(function);
+            this.ast.removeNode(function);
         }
     }
 
@@ -40,6 +60,7 @@ public class SolidityFunctionKeeper {
             SolidityNode function = getFunction(foundedNode);
             System.out.println("founded function with tx.origin: " + function.getText());
             this.importantFunctions.add(function);
+            this.ast.removeNode(function);
         }
     }
 
@@ -52,6 +73,7 @@ public class SolidityFunctionKeeper {
             SolidityNode function = getFunction(foundedNode);
             System.out.println("founded function with delegatecall: " + function.getText());
             this.importantFunctions.add(function);
+            this.ast.removeNode(function);
         }
     }
 

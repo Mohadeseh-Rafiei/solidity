@@ -49,6 +49,9 @@ public class SolidityPreprocessor {
         SolidityConstantRemover constantRemover = new SolidityConstantRemover(ast);
         ast = constantRemover.getModifiedTree();
 
+        SolidityCryptoGraphyRemover cryptoGraphyRemover = new SolidityCryptoGraphyRemover(ast);
+        ast = cryptoGraphyRemover.getModifiedTree();
+
         cleanCode codeCleaner = new cleanCode(ast);
         ast = codeCleaner.getModifiedTree(); // Update modifiedTree
 
