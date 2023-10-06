@@ -41,6 +41,17 @@ public class SolidityFunctionKeeper {
     private List<String> getUsedFunctionNames(SolidityNode function) {
         List<String> functionNames = new ArrayList<>();
         // todo: find used function names in function
+
+        while (true) {
+            SolidityNode foundedNode = ast.findNode(function.getText());
+            if (foundedNode == null) {
+                break;
+            }
+            SolidityNode parent = foundedNode.getParent();
+            System.out.println("founded token usage parent: " + parent.getText());
+            functionNames.add(parent.getText());
+        }
+
         return functionNames;
     }
 
