@@ -7,9 +7,23 @@ import java.util.List;
 public class SolidityFunctionKeeper {
     private final SolidityAST ast;
     private final List<SolidityNode> importantFunctions = new ArrayList<>();
+    private final List<SolidityNode> allFunctions = new ArrayList<>();
 
     public SolidityFunctionKeeper(SolidityAST ast) {
         this.ast = ast;
+    }
+
+    private void extractAllFunctions() {
+        while (true) {
+            SolidityNode foundedNode = ast.findNode("function");
+            if (foundedNode == null) {
+                break;
+            }
+            SolidityNode parent = foundedNode.getParent();
+            allFunctions.add(parent);
+            System.out.println("founded  function node: " + parent.getText());
+            ast.removeNode(parent);
+        }
     }
 
     private void findAllImportantFunctions() {
@@ -17,6 +31,9 @@ public class SolidityFunctionKeeper {
         this.findFunctionsWithTransferCalls();
         this.findFunctionsWithTXOrigin();
         this.findFunctionsWithDeligateCall();
+        this.extractAllFunctions();
+        System.out.println("AST: " + this.ast.getText());
+        System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
         this.importantFunctions.addAll(this.addNewFunctionsFromImportantFunctions(this.importantFunctions));
     }
 
@@ -40,18 +57,14 @@ public class SolidityFunctionKeeper {
 
     private List<String> getUsedFunctionNames(SolidityNode function) {
         List<String> functionNames = new ArrayList<>();
-        // todo: find used function names in function
-
-        while (true) {
-            SolidityNode foundedNode = ast.findNode(function.getText());
-            if (foundedNode == null) {
-                break;
+        for(SolidityNode func : allFunctions) {
+            String funcName = func.getChildren().get(1).getText();
+            System.out.println("searching for usage of function: " + funcName);
+            if (function.findExistInNode(funcName) != null) {
+                functionNames.add(funcName);
+                System.out.println("adding function name: " + funcName);
             }
-            SolidityNode parent = foundedNode.getParent();
-            System.out.println("founded token usage parent: " + parent.getText());
-            functionNames.add(parent.getText());
         }
-
         return functionNames;
     }
 
@@ -125,7 +138,20 @@ public class SolidityFunctionKeeper {
         return getFunction(node.getParent());
     }
 
+    private void addImportantFunctionsToAST() {
+        for (SolidityNode importantFunction : importantFunctions) {
+            String parentName = importantFunction.getParent().getParent().getChildren().get(1).getText();
+            System.out.println("Adding function to ast: " + parentName);
+            SolidityNode foundedNode = this.ast.findNode(parentName).getParent();
+            if(foundedNode != null) {
+                foundedNode.addChild(importantFunction);
+            }
+        }
+    }
+
     public SolidityAST getModifiedTree() {
+        findAllImportantFunctions();
+        this.addImportantFunctionsToAST();
         return this.ast;
     }
 

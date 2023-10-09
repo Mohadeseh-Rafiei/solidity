@@ -60,7 +60,8 @@ public class SolidityPreprocessor {
 
         // Step 6: Keep functions with important features
         SolidityFunctionKeeper functionKeeper = new SolidityFunctionKeeper(ast);
-        List<SolidityNode> importantFunctions = functionKeeper.getImportantFunctions();
+        // todo: fix it and get ast from it
+        functionKeeper.getModifiedTree();
 
         return Prettifier.prettify(ast);
     }
@@ -68,8 +69,8 @@ public class SolidityPreprocessor {
 
     public static void main(String[] args) {
         // Sample Solidity code
-        String filePath = "/Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/SpankChain.sol";
-        String destinationPath = "/Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/spankChainOut.sol";
+        String filePath = "src/main/java/org/example/SpankChain.sol";
+        String destinationPath = "src/main/java/org/example/spankChainOut.sol";
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
             String modifiedCode = preprocessSolidity(solidityCode);
