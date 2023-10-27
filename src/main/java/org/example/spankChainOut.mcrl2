@@ -1,4 +1,40 @@
 contract LedgerChannel {
+ sort mapping ;
+cons empty : mapping ;
+add : bytes32#Channel#mapping -> mapping;
+map
+retValue : bytes32#mapping -> Channel ;
+search : bytes32#mapping -> Bool ;
+update: bytes32#Channel#mapping -> mapping ;
+var
+array : mapping ;
+b, d : Channel ;
+a, c : bytes32;
+eqn
+retValue(a, empty) = -1 ;
+retValue(a, add(c, b, array)) = if(a == c, b, retValue(a, array)) ;
+search(a, empty) = false;
+search(a, add(c, b, array)) = if(a == c, true, search(a, array));
+update(a, b, empty) = empty;
+update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));
+ sort mapping ;
+cons empty : mapping ;
+add : bytes32#VirtualChannel#mapping -> mapping;
+map
+retValue : bytes32#mapping -> VirtualChannel ;
+search : bytes32#mapping -> Bool ;
+update: bytes32#VirtualChannel#mapping -> mapping ;
+var
+array : mapping ;
+b, d : VirtualChannel ;
+a, c : bytes32;
+eqn
+retValue(a, empty) = -1 ;
+retValue(a, add(c, b, array)) = if(a == c, b, retValue(a, array)) ;
+search(a, empty) = false;
+search(a, add(c, b, array)) = if(a == c, true, search(a, array));
+update(a, b, empty) = empty;
+update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));
  sort Address;
 cons Normal, Attacker, Owner, null, Contract : Address ;
 map equal : Address#Address -> Bool;

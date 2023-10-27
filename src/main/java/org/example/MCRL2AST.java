@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class MCRL2AST {
     private final MCRL2Node root;
 
@@ -17,5 +19,9 @@ public class MCRL2AST {
 
     public MCRL2Node findNode(String text) {
         return root.findNode(text);
+    }
+
+    public List<MCRL2Node> findAllNodes(String text) {
+        return root.findAllNodes(text);
     }
 }

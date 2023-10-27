@@ -130,4 +130,19 @@ public class MCRL2Node {
         }
         this.children.add(index, node);
     }
+
+    public List<MCRL2Node> findAllNodes(String text) {
+        List<MCRL2Node> nodes = new ArrayList<>();
+        if (Objects.equals(this.text, text)) {
+            nodes.add(this);
+            return nodes;
+        }
+        for (MCRL2Node child : children) {
+            List<MCRL2Node> temp = child.findAllNodes(text);
+            if (temp != null) {
+                nodes.addAll(temp);
+            }
+        }
+        return nodes;
+    }
 }

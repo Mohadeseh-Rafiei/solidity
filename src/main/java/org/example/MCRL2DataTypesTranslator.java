@@ -1,8 +1,9 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.antlr.v4.runtime.misc.Pair;
+
+import java.sql.Struct;
+import java.util.*;
 
 public class MCRL2DataTypesTranslator {
     private MCRL2AST ast;
@@ -15,6 +16,7 @@ public class MCRL2DataTypesTranslator {
         this.translateInt();
         this.translateBool();
         this.translateAddress();
+        this.translateMapping();
         return this.ast;
     }
 
@@ -82,6 +84,29 @@ public class MCRL2DataTypesTranslator {
                 "ad1 == ad2 = equal(ad1,ad2);\n";
     }
 
+    public String getMappingDefinition(String mappingType, String mappedType){
+        return "sort mapping ;\n" +
+                "cons empty : mapping ;\n" +
+                "add : " + mappingType + "#" + mappedType + "#mapping -> mapping;\n" +
+                "map\n" +
+                "retValue : " + mappingType + "#mapping -> " + mappedType + " ;\n" +
+                "search : " + mappingType + "#mapping -> Bool ;\n" +
+                "update: " + mappingType + "#" + mappedType + "#mapping -> mapping ;\n" +
+                "var\n" +
+                "array : mapping ;\n" +
+                "b, d : " + mappedType + " ;\n" +
+                "a, c : " + mappingType + ";\n" +
+                "eqn\n" +
+                "retValue(a, empty) = -1 ;\n" +
+                "retValue(a, add(c, b, array)) = if(a == c, b, retValue(a, array)) ;\n" +
+                "search(a, empty) = false;\n" +
+                "search(a, add(c, b, array)) = if(a == c, true, search(a, array));\n" +
+                "update(a, b, empty) = empty;\n" +
+                "update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));\n";
+    }
+
+
+
     private void translateAddress() throws Exception {
         List<String> addressTypes = new ArrayList<>(List.of("address"));
         List<MCRL2Node> contracts = new ArrayList<>();
@@ -107,6 +132,45 @@ public class MCRL2DataTypesTranslator {
             MCRL2Node addressDefinition = new MCRL2Node(this.getAddressDataSort(), contract);
             contract.addChildren(addressDefinition, 3);
             System.out.println("contract children text: " + contract.getChildren().get(3).getAbstractText());
+        }
+    }
+
+    private void translateMapping() throws Exception {
+        List<String> mappings = new ArrayList<>(List.of("mapping"));
+        List<MCRL2ContractMapping> contracts = new ArrayList<>();
+        for (String mapping : mappings) {
+                List<MCRL2Node> foundedNodes = this.ast.findAllNodes(mapping);
+            for (MCRL2Node foundedNode : foundedNodes) {
+                if (foundedNode == null) {
+                    break;
+                }
+
+                MCRL2Node contract = foundedNode.getParentWithTextInChildren("contract");
+                if (contract != null) {
+                    String mappingType = foundedNode.getParent().getChildren().get(2).getAbstractText();
+                    String mappedType = foundedNode.getParent().getChildren().get(4).getAbstractText();
+                    System.out.println("Mapping and mappedType is: " + mappingType + " " + mappedType);
+                    MCRL2ContractMapping contractMapping = new MCRL2ContractMapping(contract, mappingType, mappedType);
+                    boolean exist = false;
+                    for (MCRL2ContractMapping mcrl2ContractMapping : contracts) {
+                        if (contractMapping.isEqual(mcrl2ContractMapping)) {
+                            exist = true;
+                        }
+                    }
+
+                    if (!exist) {
+                        System.out.println("Add node to contracts: " + contract.getText());
+                        contracts.add(contractMapping);
+                    }
+                }
+
+            }
+        }
+
+        for (MCRL2ContractMapping contractMapping : contracts) {
+            MCRL2Node addressDefinition = new MCRL2Node(this.getMappingDefinition(contractMapping.getMappingType(), contractMapping.getMappedType()), contractMapping.getContract());
+            contractMapping.getContract().addChildren(addressDefinition, 3);
+            System.out.println("contract children text: " + contractMapping.getContract().getChildren().get(3).getAbstractText());
         }
     }
 }
