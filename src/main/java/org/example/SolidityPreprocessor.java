@@ -5,10 +5,9 @@ import org.antlr.v4.runtime.tree.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class SolidityPreprocessor {
-    public static String preprocessSolidity(String solidityCode) {
+    public static SolidityAST preprocessSolidity(String solidityCode) {
         SolidityLexer lexer = new SolidityLexer(CharStreams.fromString(solidityCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -63,6 +62,17 @@ public class SolidityPreprocessor {
         // todo: fix it and get ast from it
         functionKeeper.getModifiedTree();
 
+        return ast;
+    }
+
+    public static String translateToMCRL2(SolidityAST solidityAST) throws Exception {
+        // Step 1: Make AST
+        MCRL2AST ast = new MCRL2AST(solidityAST);
+
+        // Step 2: Translate INT
+        MCRL2DataTypesTranslator mcrl2IntTranslator = new MCRL2DataTypesTranslator(ast);
+        ast = mcrl2IntTranslator.getModifiedTree();
+
         return Prettifier.prettify(ast);
     }
 
@@ -70,14 +80,18 @@ public class SolidityPreprocessor {
     public static void main(String[] args) {
         // Sample Solidity code
         String filePath = "src/main/java/org/example/SpankChain.sol";
-        String destinationPath = "src/main/java/org/example/spankChainOut.sol";
+        String destinationPath = "src/main/java/org/example/spankChainOut.mcrl2";
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
-            String modifiedCode = preprocessSolidity(solidityCode);
+            SolidityAST ast = preprocessSolidity(solidityCode);
 
-            Files.write(Paths.get(destinationPath), modifiedCode.getBytes());
+            String translatedCode = translateToMCRL2(ast);
+
+            Files.write(Paths.get(destinationPath), translatedCode.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

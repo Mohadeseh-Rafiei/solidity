@@ -13,6 +13,7 @@ public class cleanCode extends SolidityBaseListener {
 
     public SolidityAST getModifiedTree() {
         this.removeEmptyContracts();
+        this.removeCompilerInfo();
         return this.ast;
     }
 
@@ -42,5 +43,13 @@ public class cleanCode extends SolidityBaseListener {
             }
             this.ast.removeNode(foundedNode);
         }
+    }
+
+    public void removeCompilerInfo() {
+        SolidityNode foundedNode = this.ast.findNode("pragma");
+        if(foundedNode == null) {
+            return;
+        }
+        this.ast.removeNode(foundedNode.getParent());
     }
 }

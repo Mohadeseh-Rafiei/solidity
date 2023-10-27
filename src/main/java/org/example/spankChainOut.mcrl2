@@ -1,7 +1,38 @@
 contract LedgerChannel {
+ sort Address;
+cons Normal, Attacker, Owner, null, Contract : Address ;
+map equal : Address#Address -> Bool;
+var ad1,ad2: Address;
+eqn
+equal(Normal, Normal) = true ;
+equal(Normal, Attacker) = false ;
+equal(Normal, Owner) = false ;
+equal(Normal, null) = false;
+equal(Normal, Contract) = false;
+equal(Attacker, Attacker) = true ;
+equal(Attacker, Normal) = false ;
+equal(Attacker, Owner) = false ;
+equal(Attacker, null) = false;
+equal(Attacker, Contract) = false ;
+equal(Owner, Owner) = true;
+equal(Owner, Normal) = false;
+equal(Owner, Attacker) = false ;
+equal(Owner, null) = false;
+equal(Owner, Contract) = false;
+equal(null, null) = true;
+equal(null, Normal) = false;
+equal(null, Attacker) = false;
+equal(null, Owner) = false;
+equal(null, Contract) = false;
+equal(Contract, Contract) = true;
+equal(Contract, Normal) = false ;
+equal(Contract, Attacker) = false ;
+equal(Contract, Owner) = false ;
+equal(Contract, null) = false;
+ad1 == ad2 = equal(ad1,ad2);
  Int public numChannels = 0 ;
  struct Channel {
- address [ 2 ] partyAddresses ;
+ Address [ 2 ] partyAddresses ;
  Int [ 4 ] ethBalances ;
  Int [ 4 ] erc20Balances ;
  Int [ 2 ] initialDeposit ;
@@ -10,20 +41,20 @@ contract LedgerChannel {
  bytes32 VCrootHash ;
  Int LCopenTimeout ;
  Int updateLCtimeout ;
- bool isOpen ;
- bool isUpdateLCSettling ;
+ Bool isOpen ;
+ Bool isUpdateLCSettling ;
  Int numOpenVC ;
  ;
  }
  struct VirtualChannel {
- bool isClose ;
- bool isInSettlementState ;
+ Bool isClose ;
+ Bool isInSettlementState ;
  Int sequence ;
- address challenger ;
+ Address challenger ;
  Int updateVCtimeout ;
- address partyA ;
- address partyB ;
- address partyI ;
+ Address partyA ;
+ Address partyB ;
+ Address partyI ;
  Int [ 2 ] ethBalances ;
  Int [ 2 ] erc20Balances ;
  Int [ 2 ] bond ;
