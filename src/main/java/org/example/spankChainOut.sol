@@ -13,7 +13,6 @@ contract LedgerChannel {
  bool isOpen ;
  bool isUpdateLCSettling ;
  Int numOpenVC ;
- ;
  }
  struct VirtualChannel {
  bool isClose ;

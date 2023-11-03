@@ -1,8 +1,5 @@
 package org.example;
 
-import org.antlr.v4.runtime.misc.Pair;
-
-import java.sql.Struct;
 import java.util.*;
 
 public class MCRL2DataTypesTranslator {
@@ -17,6 +14,7 @@ public class MCRL2DataTypesTranslator {
         this.translateBool();
         this.translateAddress();
         this.translateMapping();
+        this.translateStruct();
         return this.ast;
     }
 
@@ -105,8 +103,6 @@ public class MCRL2DataTypesTranslator {
                 "update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));\n";
     }
 
-
-
     private void translateAddress() throws Exception {
         List<String> addressTypes = new ArrayList<>(List.of("address"));
         List<MCRL2Node> contracts = new ArrayList<>();
@@ -171,6 +167,22 @@ public class MCRL2DataTypesTranslator {
             MCRL2Node addressDefinition = new MCRL2Node(this.getMappingDefinition(contractMapping.getMappingType(), contractMapping.getMappedType()), contractMapping.getContract());
             contractMapping.getContract().addChildren(addressDefinition, 3);
             System.out.println("contract children text: " + contractMapping.getContract().getChildren().get(3).getAbstractText());
+        }
+    }
+
+    private void translateStruct() throws Exception{
+        List<String> structs = new ArrayList<>(List.of("struct"));
+
+        for (String struct : structs) {
+            List<MCRL2Node> foundedNodes = this.ast.findAllNodes(struct);
+            for (MCRL2Node foundedNode : foundedNodes) {
+                if (foundedNode == null) {
+                    break;
+                }
+
+                MCRL2StructSort structSort = new MCRL2StructSort(foundedNode.getParent());
+                structSort.addStructDefinitionToContract();
+            }
         }
     }
 }
