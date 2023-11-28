@@ -43,16 +43,19 @@ public class MCRL2StructSort {
             StringBuilder var = new StringBuilder();
             String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
             String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            boolean isArray = variableTypes.get(i).contains("[");
             if (numberOnly.equals("")) {
                 numberOnly = "1";
             }
-            for (int j = 0; j < Integer.parseInt(numberOnly); j++) {
-                var.append(type);
-                if(j < Integer.parseInt(numberOnly) - 1) {
-                    var.append('#');
+            if(isArray) {
+                for (int j = 0; j < Integer.parseInt(numberOnly); j++) {
+                    var.append(type);
+                    if(j < Integer.parseInt(numberOnly) - 1) {
+                        var.append('#');
+                    }
                 }
             }
-            mapDefinitions.append("get").append(variableNames.get(i).substring(0, 1).toUpperCase()).append(variableNames.get(i).substring(1)).append(" : ").append(structName).append("-> ").append(var).append(";\n");
+            mapDefinitions.append("get").append(variableNames.get(i).substring(0, 1).toUpperCase()).append(variableNames.get(i).substring(1)).append(" : ").append(structName).append("-> ").append(isArray ? var : variableTypes.get(i)).append(";\n");
         }
 
         StringBuilder varDefinitions = new StringBuilder();
@@ -60,6 +63,7 @@ public class MCRL2StructSort {
             StringBuilder var = new StringBuilder();
             String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
             String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            boolean isArray = variableTypes.get(i).contains("[");
             if (numberOnly.equals("")) {
                 numberOnly = "1";
             }
@@ -69,7 +73,7 @@ public class MCRL2StructSort {
                     var.append('#');
                 }
             }
-            varDefinitions.append(variableNames.get(i)).append(" : ").append(var).append(";\n");
+            varDefinitions.append(variableNames.get(i)).append(" : ").append(isArray ? var : variableTypes.get(i)).append(";\n");
         }
 
         StringBuilder variableTypesFormat = new StringBuilder();
@@ -77,6 +81,7 @@ public class MCRL2StructSort {
             StringBuilder var = new StringBuilder();
             String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
             String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            boolean isArray = variableTypes.get(i).contains("[");
             if (numberOnly.equals("")) {
                 numberOnly = "1";
             }
@@ -87,9 +92,9 @@ public class MCRL2StructSort {
                 }
             }
             if(i == variableTypes.size() - 1) {
-                variableTypesFormat.append(var);
+                variableTypesFormat.append(isArray ? var : variableTypes.get(i));
             } else {
-                variableTypesFormat.append(var).append("#");
+                variableTypesFormat.append(isArray ? var : variableTypes.get(i)).append("#");
             }
         }
 
