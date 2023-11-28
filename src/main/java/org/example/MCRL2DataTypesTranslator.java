@@ -185,4 +185,45 @@ public class MCRL2DataTypesTranslator {
             }
         }
     }
+
+    private void addHarness() throws Exception {
+        List<String> functions = new ArrayList<>(List.of("function"));
+        List<MCRL2ContractMapping> contracts = new ArrayList<>();
+        for (String function : functions) {
+            List<MCRL2Node> foundedNodes = this.ast.findAllNodes(function);
+            for (MCRL2Node foundedNode : foundedNodes) {
+                if (foundedNode == null) {
+                    break;
+                }
+
+                MCRL2Node contract = foundedNode.getParentWithTextInChildren("contract");
+                if (contract != null) {
+                    String mappingType = foundedNode.getParent().getChildren().get(2).getAbstractText();
+                    String mappedType = foundedNode.getParent().getChildren().get(4).getAbstractText();
+                    System.out.println("Mapping and mappedType is: " + mappingType + " " + mappedType);
+                    MCRL2ContractMapping contractMapping = new MCRL2ContractMapping(contract, mappingType, mappedType);
+                    boolean exist = false;
+                    for (MCRL2ContractMapping mcrl2ContractMapping : contracts) {
+                        if (contractMapping.isEqual(mcrl2ContractMapping)) {
+                            exist = true;
+                        }
+                    }
+
+                    if (!exist) {
+                        System.out.println("Add node to contracts: " + contract.getText());
+                        contracts.add(contractMapping);
+                    }
+                }
+
+            }
+        }
+
+        for (MCRL2ContractMapping contractMapping : contracts) {
+            MCRL2Node addressDefinition = new MCRL2Node(this.getMappingDefinition(contractMapping.getMappingType(), contractMapping.getMappedType()), contractMapping.getContract());
+            contractMapping.getContract().addChildren(addressDefinition, 3);
+            System.out.println("contract children text: " + contractMapping.getContract().getChildren().get(3).getAbstractText());
+        }
+    }
 }
+
+

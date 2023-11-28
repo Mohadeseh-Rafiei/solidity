@@ -1,7 +1,7 @@
 contract LedgerChannel {
  sort VirtualChannel;
 cons empVirtualChannel : VirtualChannel;
-addVirtualChannel : Bool#Bool#Int#Address#Int#Address#Address#Address#Int[2]#Int[2]#Int[2] -> VirtualChannel;
+addVirtualChannel : Bool#Bool#Int#Address#Int#Address#Address#Address#Int#Int#Int#Int#Int#Int -> VirtualChannel;
 map
 getIsClose : VirtualChannel-> Bool;
 getIsInSettlementState : VirtualChannel-> Bool;
@@ -11,9 +11,9 @@ getUpdateVCtimeout : VirtualChannel-> Int;
 getPartyA : VirtualChannel-> Address;
 getPartyB : VirtualChannel-> Address;
 getPartyI : VirtualChannel-> Address;
-getEthBalances : VirtualChannel-> Int[2];
-getErc20Balances : VirtualChannel-> Int[2];
-getBond : VirtualChannel-> Int[2];
+getEthBalances : VirtualChannel-> Int#Int;
+getErc20Balances : VirtualChannel-> Int#Int;
+getBond : VirtualChannel-> Int#Int;
 var
 isClose : Bool;
 isInSettlementState : Bool;
@@ -23,9 +23,9 @@ updateVCtimeout : Int;
 partyA : Address;
 partyB : Address;
 partyI : Address;
-ethBalances : Int[2];
-erc20Balances : Int[2];
-bond : Int[2];
+ethBalances : Int#Int;
+erc20Balances : Int#Int;
+bond : Int#Int;
 eqn
 getIsClose (empVirtualChannel) = false;
 getIsClose (addVirtualChannel(isClose, isInSettlementState, sequence, challenger, updateVCtimeout, partyA, partyB, partyI, ethBalances, erc20Balances, bond)) = isClose;
@@ -51,28 +51,28 @@ getBond (empVirtualChannel) = null;
 getBond (addVirtualChannel(isClose, isInSettlementState, sequence, challenger, updateVCtimeout, partyA, partyB, partyI, ethBalances, erc20Balances, bond)) = bond;
  sort Channel;
 cons empChannel : Channel;
-addChannel : Address[2]#Int[4]#Int[4]#Int[2]#Int#Int#bytes32#Int#Int#Bool#Bool#Int -> Channel;
+addChannel : Address#Address#Int#Int#Int#Int#Int#Int#Int#Int#Int#Int#Int#Int#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#Int#Int#Bool#Bool#Int -> Channel;
 map
-getPartyAddresses : Channel-> Address[2];
-getEthBalances : Channel-> Int[4];
-getErc20Balances : Channel-> Int[4];
-getInitialDeposit : Channel-> Int[2];
+getPartyAddresses : Channel-> Address#Address;
+getEthBalances : Channel-> Int#Int#Int#Int;
+getErc20Balances : Channel-> Int#Int#Int#Int;
+getInitialDeposit : Channel-> Int#Int;
 getSequence : Channel-> Int;
 getConfirmTime : Channel-> Int;
-getVCrootHash : Channel-> bytes32;
+getVCrootHash : Channel-> bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes;
 getLCopenTimeout : Channel-> Int;
 getUpdateLCtimeout : Channel-> Int;
 getIsOpen : Channel-> Bool;
 getIsUpdateLCSettling : Channel-> Bool;
 getNumOpenVC : Channel-> Int;
 var
-partyAddresses : Address[2];
-ethBalances : Int[4];
-erc20Balances : Int[4];
-initialDeposit : Int[2];
+partyAddresses : Address#Address;
+ethBalances : Int#Int#Int#Int;
+erc20Balances : Int#Int#Int#Int;
+initialDeposit : Int#Int;
 sequence : Int;
 confirmTime : Int;
-VCrootHash : bytes32;
+VCrootHash : bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes#bytes;
 LCopenTimeout : Int;
 updateLCtimeout : Int;
 isOpen : Bool;

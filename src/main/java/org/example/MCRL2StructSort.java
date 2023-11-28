@@ -40,20 +40,56 @@ public class MCRL2StructSort {
     public void addStructDefinitionToContract() throws Exception {
         StringBuilder mapDefinitions = new StringBuilder();
         for (int i = 0; i < variableNames.size(); i++) {
-            mapDefinitions.append("get").append(variableNames.get(i).substring(0, 1).toUpperCase()).append(variableNames.get(i).substring(1)).append(" : ").append(structName).append("-> ").append(variableTypes.get(i)).append(";\n");
+            StringBuilder var = new StringBuilder();
+            String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
+            String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            if (numberOnly.equals("")) {
+                numberOnly = "1";
+            }
+            for (int j = 0; j < Integer.parseInt(numberOnly); j++) {
+                var.append(type);
+                if(j < Integer.parseInt(numberOnly) - 1) {
+                    var.append('#');
+                }
+            }
+            mapDefinitions.append("get").append(variableNames.get(i).substring(0, 1).toUpperCase()).append(variableNames.get(i).substring(1)).append(" : ").append(structName).append("-> ").append(var).append(";\n");
         }
 
         StringBuilder varDefinitions = new StringBuilder();
         for (int i = 0; i < variableNames.size(); i++) {
-            varDefinitions.append(variableNames.get(i)).append(" : ").append(variableTypes.get(i)).append(";\n");
+            StringBuilder var = new StringBuilder();
+            String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
+            String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            if (numberOnly.equals("")) {
+                numberOnly = "1";
+            }
+            for (int j = 0; j < Integer.parseInt(numberOnly); j++) {
+                var.append(type);
+                if(j < Integer.parseInt(numberOnly) - 1) {
+                    var.append('#');
+                }
+            }
+            varDefinitions.append(variableNames.get(i)).append(" : ").append(var).append(";\n");
         }
 
         StringBuilder variableTypesFormat = new StringBuilder();
         for (int i = 0; i < variableTypes.size(); i++) {
+            StringBuilder var = new StringBuilder();
+            String numberOnly= variableTypes.get(i).replaceAll("[^0-9]", "");
+            String type = variableTypes.get(i).replaceAll("[^a-zA-Z]+", "");
+            if (numberOnly.equals("")) {
+                numberOnly = "1";
+            }
+            for (int j = 0; j < Integer.parseInt(numberOnly); j++) {
+                var.append(type);
+                if(j < Integer.parseInt(numberOnly) - 1) {
+                    var.append('#');
+                }
+            }
             if(i == variableTypes.size() - 1) {
-                variableTypesFormat.append(variableTypes.get(i));
+                variableTypesFormat.append(var);
             } else {
-                variableTypesFormat.append(variableTypes.get(i)).append("#");
+                variableTypesFormat.append(var).append("#");
             }
         }
 
