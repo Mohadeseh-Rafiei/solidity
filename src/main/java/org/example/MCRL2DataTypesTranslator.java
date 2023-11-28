@@ -181,6 +181,7 @@ public class MCRL2DataTypesTranslator {
                 }
 
                 MCRL2StructSort structSort = new MCRL2StructSort(foundedNode.getParent());
+                this.ast.removeNode(foundedNode.getParent().getParent());
                 structSort.addStructDefinitionToContract();
             }
         }

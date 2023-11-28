@@ -37,6 +37,20 @@ public class MCRL2Node {
         return sb.toString();
     }
 
+    public boolean removeChild(MCRL2Node node) {
+        for (MCRL2Node child : children) {
+            if (Objects.equals(node.getText(), child.getText())) {
+                return children.remove(child);
+            }
+        }
+        for (MCRL2Node child : children) {
+            if (child.removeChild(node)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setChildren(List<MCRL2Node> children) {
         this.children = children;
     }

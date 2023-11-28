@@ -13,6 +13,11 @@ public class MCRL2AST {
         return root.getText();
     }
 
+    public void removeNode(MCRL2Node node) {
+        System.out.println("Removing node: " + node.getText());
+        root.removeChild(node);
+    }
+
     public MCRL2Node getRoot() {
         return root;
     }

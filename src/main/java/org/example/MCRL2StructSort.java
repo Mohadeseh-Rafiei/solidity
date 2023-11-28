@@ -1,5 +1,6 @@
 package org.example;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -121,6 +122,11 @@ public class MCRL2StructSort {
                 "var\n" + varDefinitions +
                 "eqn\n" + eqnDefinitions ;
 
+//        List<MCRL2Node> children = contract.getChildren();
+//
+//        for (MCRL2Node node : children) {
+//            contract.removeChild(node);
+//        }
         contract.addChildren(new MCRL2Node(definition, contract), 3);
     }
 

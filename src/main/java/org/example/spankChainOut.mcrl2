@@ -171,35 +171,6 @@ equal(Contract, Owner) = false ;
 equal(Contract, null) = false;
 ad1 == ad2 = equal(ad1,ad2);
  Int public numChannels = 0 ;
- struct Channel {
- Address [ 2 ] partyAddresses ;
- Int [ 4 ] ethBalances ;
- Int [ 4 ] erc20Balances ;
- Int [ 2 ] initialDeposit ;
- Int sequence ;
- Int confirmTime ;
- bytes32 VCrootHash ;
- Int LCopenTimeout ;
- Int updateLCtimeout ;
- Bool isOpen ;
- Bool isUpdateLCSettling ;
- Int numOpenVC ;
- ;
- }
- struct VirtualChannel {
- Bool isClose ;
- Bool isInSettlementState ;
- Int sequence ;
- Address challenger ;
- Int updateVCtimeout ;
- Address partyA ;
- Address partyB ;
- Address partyI ;
- Int [ 2 ] ethBalances ;
- Int [ 2 ] erc20Balances ;
- Int [ 2 ] bond ;
- ;
- }
  mapping ( bytes32 => VirtualChannel ) public virtualChannels ;
  mapping ( bytes32 => Channel ) public Channels ;
  }
