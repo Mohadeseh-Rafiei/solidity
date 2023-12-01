@@ -69,8 +69,12 @@ public class SolidityPreprocessor {
         // Step 1: Make AST
         MCRL2AST ast = new MCRL2AST(solidityAST);
 
-        // Step 2: Translate INT
+        // Step 2: Translate Types
         MCRL2DataTypesTranslator mcrl2IntTranslator = new MCRL2DataTypesTranslator(ast);
+
+        // Step 3: Translate functions
+
+
         ast = mcrl2IntTranslator.getModifiedTree();
 
         return Prettifier.prettify(ast);
@@ -97,5 +101,5 @@ public class SolidityPreprocessor {
 }
 
 /// data
-//funcctions
-//harness
+//  functions
+//  harness
