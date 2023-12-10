@@ -16,7 +16,12 @@ public class MCRL2FunctionTranslator {
         return this.ast;
     }
 
+    private String extractFunctionName(MCRL2Node node) {
+        return node.getChildren().get(1).getText();
+    }
+
     private void translateFunction() throws Exception{
+        System.out.println("Translating functions");
         List<String> functions = new ArrayList<>(List.of("function"));
 
         for (String function : functions) {
@@ -25,11 +30,16 @@ public class MCRL2FunctionTranslator {
                 if (foundedNode == null) {
                     break;
                 }
-
+                String functionName = this.extractFunctionName(foundedNode.getParent());
+                System.out.println("function name: " + functionName);
                 // todo : how to calculate args and types?
-                // MCRL2Function translatedFunction = new MCRL2Function(foundedNode.getParent());
+                MCRL2Function translatedFunction = new MCRL2Function(functionName, new ArrayList<>(), new ArrayList<>(),foundedNode.getParent());
+
+                MCRL2Node parent = foundedNode.getParent().getParent().getParent();
+                int index = parent.getChildren().indexOf(foundedNode.getParent().getParent());
                 this.ast.removeNode(foundedNode.getParent().getParent());
-                // todo : add function node instead of prev node
+                parent.addChildren(translatedFunction.getFunctionMCRL2Node(parent), index);
+
             }
         }
     }

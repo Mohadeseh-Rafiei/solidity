@@ -33,7 +33,9 @@ public class SolidityFunctionKeeper {
         this.findFunctionsWithDeligateCall();
         this.extractAllFunctions();
         System.out.println("AST: " + this.ast.getText());
-        System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
+        if (this.allFunctions.size() != 0) {
+            System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
+        }
         this.importantFunctions.addAll(this.addNewFunctionsFromImportantFunctions(this.importantFunctions));
     }
 

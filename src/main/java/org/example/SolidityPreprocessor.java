@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class SolidityPreprocessor {
-    public static SolidityAST preprocessSolidity(String solidityCode) {
+    public static SolidityAST preprocessSolidity(String solidityCode, Boolean SkipModification) {
         SolidityLexer lexer = new SolidityLexer(CharStreams.fromString(solidityCode));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -16,6 +16,10 @@ public class SolidityPreprocessor {
 
         // Step 1: Make AST
         SolidityAST ast = new SolidityAST(tree);
+
+        if (SkipModification) {
+            return ast;
+        }
 
         // Step 2: Handle modifiers and continuation sections
         SolidityModifierListener modifierListener = new SolidityModifierListener(ast);
@@ -71,11 +75,11 @@ public class SolidityPreprocessor {
 
         // Step 2: Translate Types
         MCRL2DataTypesTranslator mcrl2IntTranslator = new MCRL2DataTypesTranslator(ast);
+        ast = mcrl2IntTranslator.getModifiedTree();
 
         // Step 3: Translate functions
-
-
-        ast = mcrl2IntTranslator.getModifiedTree();
+        MCRL2FunctionTranslator mcrl2FunctionTranslator = new MCRL2FunctionTranslator(ast);
+        ast = mcrl2FunctionTranslator.getModifiedTree();
 
         return Prettifier.prettify(ast);
     }
@@ -83,11 +87,13 @@ public class SolidityPreprocessor {
 
     public static void main(String[] args) {
         // Sample Solidity code
-        String filePath = "src/main/java/org/example/SpankChain.sol";
-        String destinationPath = "src/main/java/org/example/spankChainOut.mcrl2";
+        String filePath = "src/main/java/org/example/DoS.sol";
+        String destinationPath = "src/main/java/org/example/DoS.mcrl2";
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
-            SolidityAST ast = preprocessSolidity(solidityCode);
+
+            // todo: skip modification will be false for the final version
+            SolidityAST ast = preprocessSolidity(solidityCode, true);
 
             String translatedCode = translateToMCRL2(ast);
 
