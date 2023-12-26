@@ -1,5 +1,4 @@
-pragma solidity ^ 0.8.13 ;
- contract DosAuction {
+contract DosAuction {
  sort Address;
 cons Normal, Attacker, Owner, null, Contract : Address ;
 map equal : Address#Address -> Bool;
@@ -33,9 +32,12 @@ equal(Contract, null) = false;
 ad1 == ad2 = equal(ad1,ad2);
  Address highestBidder = 0x0000000000000000000000000000000000000000 ;
  Int highestBid = 0 ;
+ }
  bid() =
 (msg.value>highestBid) ->
-(bid_firstSuccess.EXAMPLE_FUNCTION_CALL!!!)
+(bid_firstSuccess.(((call_transfer_EmptyFallback.EXAMPLE_TRANSFER_BODY!!!) +
+call_transfer_NoFallback.EXAMPLE_TRANSFER_BODY!!!) +
+call_transfer_Fallback.EXAMPLE_TRANSFER_BODY!!!))
+))
 <> bid_firstFail.EXAMPLE_FUNCTION_CALL!!!;
- }
  <EOF>

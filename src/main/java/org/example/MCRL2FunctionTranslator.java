@@ -35,9 +35,9 @@ public class MCRL2FunctionTranslator {
                 // todo : how to calculate args and types?
                 MCRL2Function translatedFunction = new MCRL2Function(functionName, new ArrayList<>(), new ArrayList<>(),foundedNode.getParent());
 
-                MCRL2Node parent = foundedNode.getParent().getParent().getParent();
-                int index = parent.getChildren().indexOf(foundedNode.getParent().getParent());
-                this.ast.removeNode(foundedNode.getParent().getParent());
+                MCRL2Node parent = foundedNode.getParent().getParent();
+                int index = parent.getChildren().indexOf(foundedNode.getParent());
+                this.ast.removeNode(foundedNode.getParent());
                 parent.addChildren(translatedFunction.getFunctionMCRL2Node(parent), index);
 
             }

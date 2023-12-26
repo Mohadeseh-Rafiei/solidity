@@ -21,7 +21,8 @@ public class SolidityInterfaceRemover extends SolidityBaseListener {
         SolidityNode currentNode = new SolidityNode(ctx, null);
         // Remove all function definitions within the interface
         System.out.println("Enter function definition, ctx is: " + ctx.getText());
-        if(currentNode.findNode("{") == null) {
+        if(currentNode.findExistInNode("{") == null) {
+            System.out.println("Removing interface function definition: " + currentNode.getText());
             ast.removeNode(currentNode);
         }
     }

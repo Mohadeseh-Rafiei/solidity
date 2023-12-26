@@ -24,7 +24,7 @@ public class MCRL2Function {
         return this.node.getChildren().get(this.node.getChildren().size() - 1);
     }
 
-    private String translateRequire(MCRL2Node nodeWithRequire) {
+    private String translateRequire(MCRL2Node nodeWithRequire, Integer requireCount, String successBody) {
         MCRL2Node foundedNode = nodeWithRequire.findNode("require");
         if (foundedNode == null) {
             return "";
@@ -38,25 +38,71 @@ public class MCRL2Function {
         String condition = foundedNode.getParent().getChildren().get(2).getChildren().get(0).getChildren().get(0).getText();
         System.out.println("condition: " + condition);
         text.append("(").append(condition).append(") ->\n");
-        // todo: make it dynamic by depth
-        text.append("(").append(this.name).append("_firstSuccess").append(".EXAMPLE_FUNCTION_CALL!!!)\n");
-        text.append("<> ").append(this.name).append("_firstFail").append(".EXAMPLE_FUNCTION_CALL!!!");
+
+        String prefix = getPrefix(requireCount);
+        text.append("(").append(this.name).append("_").append(prefix).append("Success").append(".(").append(successBody).append("))\n");
+        text.append("<> ").append(this.name).append("_").append(prefix).append("Fail").append(".EXAMPLE_FUNCTION_CALL!!!");
         return text.toString();
+    }
+
+    private String getPrefix(Integer requireCount) {
+        switch (requireCount) {
+            case 1: return "first";
+            case 2: return "second";
+            case 3: return "third";
+            case 4: return "fourth";
+            case 5: return "fifth";
+            case 6: return "sixth";
+            case 7: return "seventh";
+            case 8: return "eighth";
+            case 9: return "ninth";
+            default: return "none";
+        }
     }
 
     private String getBodyText() {
         StringBuilder text = new StringBuilder();
         MCRL2Node body = this.findFunctionBody();
         System.out.println("body: " + body.getText());
+        Integer RequireCount = 0;
         for (MCRL2Node child : body.getChildren()) {
             if (Objects.equals(child.getText(), "{") || Objects.equals(child.getText(), "}")) {
                 continue;
             }
             if (child.findNode("require") != null) {
+                RequireCount++;
                 System.out.println("node with require statement founded:" + child.getText());
-                text.append(this.translateRequire(child));
+                // todo: find correct parent of require
+                MCRL2Node parentOfRequire = child.getParent();
+                System.out.println("parent of require: " + parentOfRequire.getText());
+                String successBody = this.getSuccessBody(parentOfRequire);
+                text.append(this.translateRequire(child, RequireCount, successBody));
             }
         }
+        return text.toString();
+    }
+
+    private String getSuccessBody(MCRL2Node parent) {
+        StringBuilder text = new StringBuilder();
+        for (MCRL2Node child : parent.getChildren()) {
+            if (this.transferCallExists(child)) {
+                System.out.println("transfer call founded:" + child.getText());
+                text.append(this.translateTransferCall(child));
+            }
+        }
+        return text.toString();
+    }
+
+    private boolean transferCallExists(MCRL2Node node) {
+        // todo: check other transfer calls
+        return node.findNode("transfer") != null || node.findNode("send") != null || node.findNode("call") != null || node.findNode("transferFrom") != null;
+    }
+
+    private String translateTransferCall(MCRL2Node node) {
+        StringBuilder text = new StringBuilder();
+        text.append("((").append("call_transfer_EmptyFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
+                .append("call_transfer_NoFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
+                .append("call_transfer_Fallback").append(".EXAMPLE_TRANSFER_BODY!!!").append("))\n");
         return text.toString();
     }
 

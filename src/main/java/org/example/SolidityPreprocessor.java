@@ -93,7 +93,7 @@ public class SolidityPreprocessor {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
 
             // todo: skip modification will be false for the final version
-            SolidityAST ast = preprocessSolidity(solidityCode, true);
+            SolidityAST ast = preprocessSolidity(solidityCode, false);
 
             String translatedCode = translateToMCRL2(ast);
 

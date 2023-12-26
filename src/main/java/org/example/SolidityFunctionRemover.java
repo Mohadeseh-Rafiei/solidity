@@ -17,12 +17,10 @@ public class SolidityFunctionRemover extends SolidityBaseListener {
 
     @Override
     public void enterFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
-        System.out.println("Enter function definition, ctx is: " + ctx.getText());
-
         String mod = ctx.modifierList().getText();
+        System.out.println("modifier is: " + mod);
         if(mod.equals("pure") || mod.equals("view") || mod.equals("constant") || mod.equals("externalconstant") || mod.equals("constantreturns") || mod.equals("externalconstantreturns")) {
             SolidityNode currentNode = new SolidityNode(ctx, null);
-            System.out.println("added node to list:" + extractFunctionName(currentNode.getText()));
             functions.add(extractFunctionName(currentNode.getText()));
             ast.removeNode(currentNode);
         }

@@ -12,7 +12,6 @@ contract DosAuction {
 			highestBid = msg.value;
 		}
         else{
-			// Refund the old leader, if it fails then revert 
 			require(payable(highestBidder).send(highestBid), "Failed to send Ether");
 			highestBidder = msg.sender;
 			highestBid = msg.value;
