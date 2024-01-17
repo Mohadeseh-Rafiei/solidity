@@ -17,7 +17,7 @@ public class SolidityCodeGenerator extends SolidityBaseListener {
 
     @Override
     public void enterFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
-        String functionName = ctx.identifier().getText();
+        String functionName = ctx.getText();
         if (importantFunctions.contains(functionName)) {
             // Only include functions that are marked as important
             modifiedCodeBuilder.append(ctx.getText()).append("\n");
@@ -29,10 +29,6 @@ public class SolidityCodeGenerator extends SolidityBaseListener {
         modifiedCodeBuilder.append(node.getText());
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
 
     public String getModifiedCode() {
         return modifiedCodeBuilder.toString();

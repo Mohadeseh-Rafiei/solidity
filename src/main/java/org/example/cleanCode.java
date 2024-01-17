@@ -17,11 +17,6 @@ public class cleanCode extends SolidityBaseListener {
         return this.ast;
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     public void contractInterfaceRemover() {
         List<SolidityNode> foundedNodes = this.ast.findAllNodes("contract");
 

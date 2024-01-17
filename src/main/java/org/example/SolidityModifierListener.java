@@ -100,11 +100,6 @@ public class SolidityModifierListener extends SolidityBaseListener {
         return input.getChildren().get(2).getChildren();
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     private void findAndRemoveWithoutArgsModifiers() {
         for(int i = 0; i < modifiersWithoutArgNames.size(); i++) {
             String modifier = modifiersWithoutArgNames.get(i);

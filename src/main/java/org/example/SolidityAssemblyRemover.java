@@ -17,10 +17,6 @@ public class SolidityAssemblyRemover extends SolidityBaseListener{
     @Override
     public void enterAssemblyBlock(SolidityParser.AssemblyBlockContext ctx) {}
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
 
     public SolidityAST getModifiedTree() {
         while (true) {

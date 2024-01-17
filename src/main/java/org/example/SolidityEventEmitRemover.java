@@ -57,11 +57,6 @@ public class SolidityEventEmitRemover extends SolidityBaseListener {
         System.out.println("Exit emit definition");
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     private void findAndRemoveAllEventCalls() {
         for(String event : events) {
             while (true) {

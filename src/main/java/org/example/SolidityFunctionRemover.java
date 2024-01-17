@@ -41,11 +41,6 @@ public class SolidityFunctionRemover extends SolidityBaseListener {
 	     System.out.println("Exit event definition");
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     // Helper method to traverse the original parse tree and construct the modified parse tree
     public SolidityAST getModifiedTree() {
         findAndRemoveAllEventCalls();

@@ -8,11 +8,6 @@ public class SolidityConstantRemover extends SolidityBaseListener{
         this.ast = ast;
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     public void removeConstants () {
         while (true) {
             SolidityNode foundedNode = ast.findNode("constant");

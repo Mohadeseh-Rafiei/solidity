@@ -14,11 +14,6 @@ public class SolidityTokenRemover extends SolidityBaseListener{
     }
 
     @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
-    @Override
     public void enterContractDefinition(SolidityParser.ContractDefinitionContext ctx) {}
 
     public void removeTokenUsages() {

@@ -26,9 +26,4 @@ public class SolidityInterfaceRemover extends SolidityBaseListener {
             ast.removeNode(currentNode);
         }
     }
-
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
 }

@@ -34,7 +34,9 @@ public class SolidityFunctionKeeper {
         this.extractAllFunctions();
         System.out.println("AST: " + this.ast.getText());
         if (this.allFunctions.size() != 0) {
-            System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
+            if (this.allFunctions.get(0).getParent().getParent().getChildren().size() > 1) {
+                System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
+            }
         }
         this.importantFunctions.addAll(this.addNewFunctionsFromImportantFunctions(this.importantFunctions));
     }
@@ -81,9 +83,15 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded function with .send( text: " + function.getText());
-            this.importantFunctions.add(function);
-            this.ast.removeNode(function);
+            if (function != null) {
+                System.out.println("founded function with .send( text: " + function.getText());
+                this.importantFunctions.add(function);
+                this.ast.removeNode(function);
+            }
+            else {
+                System.out.println("function is null");
+                this.ast.removeNode(foundedNode);
+            }
         }
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode(".call{");
@@ -91,9 +99,15 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded function with .call{ text: " + function.getText());
-            this.importantFunctions.add(function);
-            this.ast.removeNode(function);
+            if (function != null) {
+                System.out.println("founded function with .call{ text: " + function.getText());
+                this.importantFunctions.add(function);
+                this.ast.removeNode(function);
+            }
+            else {
+                System.out.println("function is null");
+                this.ast.removeNode(foundedNode);
+            }
         }
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode(".transfer(");
@@ -101,9 +115,15 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded function with .transfer( text: " + function.getText());
-            this.importantFunctions.add(function);
-            this.ast.removeNode(function);
+            if (function != null) {
+                System.out.println("founded function with .transfer( text: " + function.getText());
+                this.importantFunctions.add(function);
+                this.ast.removeNode(function);
+            }
+            else {
+                System.out.println("function is null");
+                this.ast.removeNode(foundedNode);
+            }
         }
     }
 
@@ -114,9 +134,15 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded function with tx.origin: " + function.getText());
-            this.importantFunctions.add(function);
-            this.ast.removeNode(function);
+            if (function != null) {
+                System.out.println("founded function with tx.origin: " + function.getText());
+                this.importantFunctions.add(function);
+                this.ast.removeNode(function);
+            }
+            else {
+                System.out.println("function is null");
+                this.ast.removeNode(foundedNode);
+            }
         }
     }
 
@@ -127,14 +153,23 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode function = getFunction(foundedNode);
-            System.out.println("founded function with delegatecall: " + function.getText());
-            this.importantFunctions.add(function);
-            this.ast.removeNode(function);
+            if (function != null) {
+                System.out.println("founded function with delegatecall: " + function.getText());
+                this.importantFunctions.add(function);
+                this.ast.removeNode(function);
+            }
+            else {
+                System.out.println("function is null");
+                this.ast.removeNode(foundedNode);
+            }
         }
     }
 
     private SolidityNode getFunction(SolidityNode node) {
-        if(node.getChildren().get(0).getText().equals("function")) {
+        if (node == null) {
+            return null;
+        }
+        if(!(node.getChildren().isEmpty()) && node.getChildren().get(0).getText().equals("function")) {
             return node;
         }
         return getFunction(node.getParent());

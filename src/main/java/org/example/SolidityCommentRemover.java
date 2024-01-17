@@ -8,11 +8,6 @@ public class SolidityCommentRemover extends SolidityBaseListener{
         this.ast = ast;
     }
 
-    @Override
-    public void enterTerminal(TerminalNode node) {
-
-    }
-
     public void removeComments () {
         while (true) {
             SolidityNode foundedNode = ast.findExistInNode("///");
