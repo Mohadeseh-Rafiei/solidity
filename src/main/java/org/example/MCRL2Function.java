@@ -29,10 +29,6 @@ public class MCRL2Function {
         if (foundedNode == null) {
             return "";
         }
-        // todo: fix parser to parse require statement
-        if (foundedNode.getParent().findNode("<missing ';'>") != null){
-            return "";
-        }
         StringBuilder text = new StringBuilder();
         System.out.println("parent: " + foundedNode.getParent().getText());
         String condition = foundedNode.getParent().getChildren().get(2).getChildren().get(0).getChildren().get(0).getText();
@@ -65,7 +61,10 @@ public class MCRL2Function {
         MCRL2Node body = this.findFunctionBody();
         System.out.println("body: " + body.getText());
         Integer RequireCount = 0;
-        for (MCRL2Node child : body.getChildren()) {
+        List<MCRL2Node> children = body.getChildren();
+        for (int i = 0; i < children.size(); i++ ) {
+            MCRL2Node child = children.get(i);
+            System.out.println("child of require body for translation: " + child.getText());
             if (Objects.equals(child.getText(), "{") || Objects.equals(child.getText(), "}")) {
                 continue;
             }
@@ -75,19 +74,31 @@ public class MCRL2Function {
                 // todo: find correct parent of require
                 MCRL2Node parentOfRequire = child.getParent();
                 System.out.println("parent of require: " + parentOfRequire.getText());
-                String successBody = this.getSuccessBody(parentOfRequire);
+                String successBody = this.getSuccessBody(children , i, RequireCount);
                 text.append(this.translateRequire(child, RequireCount, successBody));
+                return text.toString();
             }
         }
         return text.toString();
     }
 
-    private String getSuccessBody(MCRL2Node parent) {
+    private String getSuccessBody(List<MCRL2Node> children, int startIndex, int count) {
         StringBuilder text = new StringBuilder();
-        for (MCRL2Node child : parent.getChildren()) {
+        for (int i = startIndex + 1; i < children.size(); i++) {
+            MCRL2Node child = children.get(i);
             if (this.transferCallExists(child)) {
                 System.out.println("transfer call founded:" + child.getText());
                 text.append(this.translateTransferCall(child));
+            }
+            if (child.findNode("require") != null) {
+                count++;
+                System.out.println("node with require statement founded:" + child.getText());
+                // todo: find correct parent of require
+                MCRL2Node parentOfRequire = child.getParent();
+                System.out.println("parent of require: " + parentOfRequire.getText());
+                String successBody = this.getSuccessBody(children , i, count);
+                text.append(this.translateRequire(child, count, successBody));
+                return text.toString();
             }
         }
         return text.toString();
@@ -100,6 +111,7 @@ public class MCRL2Function {
 
     private String translateTransferCall(MCRL2Node node) {
         StringBuilder text = new StringBuilder();
+        // todo: test it after fix the grammar
         text.append("((").append("call_transfer_EmptyFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
                 .append("call_transfer_NoFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
                 .append("call_transfer_Fallback").append(".EXAMPLE_TRANSFER_BODY!!!").append("))\n");

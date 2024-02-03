@@ -33,14 +33,13 @@ public class MCRL2FunctionTranslator {
                 String functionName = this.extractFunctionName(foundedNode.getParent());
                 System.out.println("function name: " + functionName);
                 // todo : how to calculate args and types?
-                MCRL2Function translatedFunction = new MCRL2Function(functionName, new ArrayList<>(), new ArrayList<>(),foundedNode.getParent());
+                MCRL2Function translatedFunction = new MCRL2Function(functionName, new ArrayList<>(), new ArrayList<>(),foundedNode.getParent().getParent());
 
-                MCRL2Node parent = foundedNode.getParent().getParent();
-                int index = parent.getChildren().indexOf(foundedNode.getParent());
-//                this.ast.removeNode(foundedNode.getParent());
-                System.out.println("MCRL2" + MCRL2Harness.translateSolidityLineToMCRL2(foundedNode.getParent()));
+                MCRL2Node functionNode = foundedNode.getParent().getParent();
+                MCRL2Node parent = functionNode.getParent();
+                int index = parent.getChildren().indexOf(functionNode);
                 parent.addChildren(translatedFunction.getFunctionMCRL2Node(parent), index);
-
+                this.ast.removeNode(functionNode);
             }
         }
     }

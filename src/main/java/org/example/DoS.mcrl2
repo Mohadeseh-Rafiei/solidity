@@ -33,18 +33,10 @@ ad1 == ad2 = equal(ad1,ad2);
  Address highestBidder = 0x0000000000000000000000000000000000000000 ;
  Int highestBid = 0 ;
  bid() =
-;
- function bid ( ) public payable {
- require ( msg . value > highestBid , "Need to be higher than highest bid" ) ;
- if ( highestBidder == 0x0000000000000000000000000000000000000000 ) {
- highestBidder = msg . sender ;
- highestBid = msg . value ;
- }
- else {
- require ( , "Failed to send Ether" ) ;
- highestBidder = msg . sender ;
- highestBid = msg . value ;
- }
- }
+(msg.value>highestBid) ->
+(bid_firstSuccess.((,) ->
+(bid_secondSuccess.())
+<> bid_secondFail.EXAMPLE_FUNCTION_CALL!!!))
+<> bid_firstFail.EXAMPLE_FUNCTION_CALL!!!;
  }
  <EOF>
