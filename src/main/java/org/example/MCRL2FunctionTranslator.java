@@ -37,7 +37,8 @@ public class MCRL2FunctionTranslator {
 
                 MCRL2Node parent = foundedNode.getParent().getParent();
                 int index = parent.getChildren().indexOf(foundedNode.getParent());
-                this.ast.removeNode(foundedNode.getParent());
+//                this.ast.removeNode(foundedNode.getParent());
+                System.out.println("MCRL2" + MCRL2Harness.translateSolidityLineToMCRL2(foundedNode.getParent()));
                 parent.addChildren(translatedFunction.getFunctionMCRL2Node(parent), index);
 
             }

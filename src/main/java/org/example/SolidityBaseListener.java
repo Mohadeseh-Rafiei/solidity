@@ -1,6 +1,5 @@
-// Generated from /Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/Solidity.g4 by ANTLR 4.13.1
+// Generated from Solidity.g4 by ANTLR 4.7.2
 package org.example;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -10,7 +9,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-@SuppressWarnings("CheckReturnValue")
 public class SolidityBaseListener implements SolidityListener {
 	/**
 	 * {@inheritDoc}

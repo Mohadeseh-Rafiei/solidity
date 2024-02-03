@@ -20,9 +20,11 @@ public class SolidityFunctionKeeper {
                 break;
             }
             SolidityNode parent = foundedNode.getParent();
+            if(allFunctions.contains(parent)) {
+                break;
+            }
             allFunctions.add(parent);
             System.out.println("founded  function node: " + parent.getText());
-            ast.removeNode(parent);
         }
     }
 
@@ -33,6 +35,7 @@ public class SolidityFunctionKeeper {
         this.findFunctionsWithDeligateCall();
         this.extractAllFunctions();
         System.out.println("AST: " + this.ast.getText());
+        System.out.println("IMPORTANT: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(0).getText());
         if (this.allFunctions.size() != 0) {
             if (this.allFunctions.get(0).getParent().getParent().getChildren().size() > 1) {
                 System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());

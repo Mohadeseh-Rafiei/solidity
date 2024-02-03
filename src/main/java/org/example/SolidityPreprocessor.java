@@ -95,6 +95,7 @@ public class SolidityPreprocessor {
             // todo: skip modification will be false for the final version
             SolidityAST ast = preprocessSolidity(solidityCode, false);
 
+            System.out.println(ast.getText());
             String translatedCode = translateToMCRL2(ast);
 
             Files.write(Paths.get(destinationPath), translatedCode.getBytes());
