@@ -31,7 +31,7 @@ public class MCRL2Function {
         }
         StringBuilder text = new StringBuilder();
         System.out.println("parent: " + foundedNode.getParent().getText());
-        String condition = foundedNode.getParent().getChildren().get(2).getChildren().get(0).getChildren().get(0).getText();
+        String condition = foundedNode.getParent().getChildren().get(2).getText();
         System.out.println("condition: " + condition);
         text.append("(").append(condition).append(") ->\n");
 
@@ -111,7 +111,6 @@ public class MCRL2Function {
 
     private String translateTransferCall(MCRL2Node node) {
         StringBuilder text = new StringBuilder();
-        // todo: test it after fix the grammar
         text.append("((").append("call_transfer_EmptyFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
                 .append("call_transfer_NoFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
                 .append("call_transfer_Fallback").append(".EXAMPLE_TRANSFER_BODY!!!").append("))\n");

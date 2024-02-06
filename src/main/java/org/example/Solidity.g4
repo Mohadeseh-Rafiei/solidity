@@ -297,6 +297,7 @@ expression
   | expression '[' expression? ':' expression? ']'
   | expression '.' identifier
   | expression '{' nameValueList '}'
+  | 'require' '(' expression ',' stringLiteral ')'
   | expression '(' functionCallArguments ')'
   | '(' expression ')'
   | ('++' | '--') expression

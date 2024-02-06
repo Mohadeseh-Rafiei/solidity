@@ -1,5 +1,4 @@
-pragma solidity ^ 0.8.13 ;
- contract DAO {
+contract DAO {
  sort mapping ;
 cons empty : mapping ;
 add : Address#uint#mapping -> mapping;
@@ -51,10 +50,10 @@ equal(Contract, null) = false;
 ad1 == ad2 = equal(ad1,ad2);
  mapping ( Address => uint ) public userBalances ;
  addToBalance() =
-functionaddToBalance()publicpayable{userBalances[msg.sender]+=msg.value*(10**18);}
- getUserBalance() =
-functiongetUserBalance(Addressuser)publicviewreturns(uint){returnuserBalances[user];}
+;
  withdrawBalance() =
-functionwithdrawBalance(uintamount)public{if(userBalances[msg.sender]>=amount){(Booltemp,)=msg.sender.call<missing ';'>{value:(amount/(10**18))<missing ';'>}("");require(temp,'error');userBalances[msg.sender]-=amount;}}
+(temp) ->
+(withdrawBalance_firstSuccess.())
+<> withdrawBalance_firstFail.EXAMPLE_FUNCTION_CALL!!!;
  }
  <EOF>

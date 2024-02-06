@@ -19,7 +19,8 @@ public class SolidityFunctionRemover extends SolidityBaseListener {
     public void enterFunctionDefinition(SolidityParser.FunctionDefinitionContext ctx) {
         String mod = ctx.modifierList().getText();
         System.out.println("modifier is: " + mod);
-        if(mod.equals("pure") || mod.equals("view") || mod.equals("constant") || mod.equals("externalconstant") || mod.equals("constantreturns") || mod.equals("externalconstantreturns")) {
+        // todo: fix bug in removing view
+        if(mod.equals("pure") || mod.equals("view") || mod.equals("constant") || mod.equals("externalconstant") || mod.equals("constantreturns") || mod.equals("externalconstantreturns") || mod.equals("publicview")) {
             SolidityNode currentNode = new SolidityNode(ctx, null);
             functions.add(extractFunctionName(currentNode.getText()));
             ast.removeNode(currentNode);

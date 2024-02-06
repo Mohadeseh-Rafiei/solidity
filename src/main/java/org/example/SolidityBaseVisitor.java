@@ -1,4 +1,4 @@
-// Generated from Solidity.g4 by ANTLR 4.7.2
+// Generated from /Users/ali/Desktop/Uni/Solidity Project/solidity/src/main/java/org/example/Solidity.g4 by ANTLR 4.13.1
 package org.example;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
+@SuppressWarnings("CheckReturnValue")
 public class SolidityBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements SolidityVisitor<T> {
 	/**
 	 * {@inheritDoc}
