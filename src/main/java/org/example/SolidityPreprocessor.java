@@ -92,7 +92,7 @@ public class SolidityPreprocessor {
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
 
-            // todo: skip modification will be false for the final version
+            // skip modification will be false for the final version
             SolidityAST ast = preprocessSolidity(solidityCode, false);
 
             System.out.println(ast.getText());

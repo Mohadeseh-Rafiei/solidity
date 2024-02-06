@@ -35,8 +35,8 @@ public class SolidityFunctionKeeper {
         this.findFunctionsWithDeligateCall();
         this.extractAllFunctions();
         System.out.println("AST: " + this.ast.getText());
-        System.out.println("IMPORTANT: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(0).getText());
         if (this.allFunctions.size() != 0) {
+            System.out.println("IMPORTANT: " + this.allFunctions.get(0).getParent().getChildren().get(0).getText());
             if (this.allFunctions.get(0).getParent().getParent().getChildren().size() > 1) {
                 System.out.println("function node parent name: " + this.allFunctions.get(0).getParent().getParent().getChildren().get(1).getText());
             }
@@ -92,7 +92,7 @@ public class SolidityFunctionKeeper {
                 this.ast.removeNode(function);
             }
             else {
-                System.out.println("function is null");
+                System.out.println("function is null for .send transfer call and founded node is: " + foundedNode.getText());
                 this.ast.removeNode(foundedNode);
             }
         }
@@ -108,7 +108,7 @@ public class SolidityFunctionKeeper {
                 this.ast.removeNode(function);
             }
             else {
-                System.out.println("function is null");
+                System.out.println("function is null for .call transfer call and founded node is: " + foundedNode.getText());
                 this.ast.removeNode(foundedNode);
             }
         }
@@ -124,7 +124,7 @@ public class SolidityFunctionKeeper {
                 this.ast.removeNode(function);
             }
             else {
-                System.out.println("function is null");
+                System.out.println("function is null for .transfer transfer call and founded node is: " + foundedNode.getText());
                 this.ast.removeNode(foundedNode);
             }
         }
@@ -162,7 +162,7 @@ public class SolidityFunctionKeeper {
                 this.ast.removeNode(function);
             }
             else {
-                System.out.println("function is null");
+                System.out.println("function is null and founded node is: " + foundedNode.getText());
                 this.ast.removeNode(foundedNode);
             }
         }
@@ -172,8 +172,10 @@ public class SolidityFunctionKeeper {
         if (node == null) {
             return null;
         }
-        if(!(node.getChildren().isEmpty()) && node.getChildren().get(0).getText().equals("function")) {
-            return node;
+        if(!(node.getChildren().isEmpty())){
+            if (node.getChildren().get(0).getText().contains("function")) {
+                return node;
+            }
         }
         return getFunction(node.getParent());
     }
