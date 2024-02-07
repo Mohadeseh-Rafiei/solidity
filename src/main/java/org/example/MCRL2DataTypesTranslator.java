@@ -19,7 +19,7 @@ public class MCRL2DataTypesTranslator {
     }
 
     private void translateInt() {
-        List<String> intTypes = new ArrayList<>(Arrays.asList("int8", "int16", "int32", "int64", "int128", "int256", "uint8", "uint16", "uint32", "uint64", "uint128", "uint256"));
+        List<String> intTypes = new ArrayList<>(Arrays.asList("int", "int8", "int16", "int32", "int64", "int128", "int256", "uint8", "uint16", "uint32", "uint64", "uint128", "uint256"));
         for (String intType : intTypes) {
             while (true) {
                 MCRL2Node foundedNode = this.ast.findNode(intType);

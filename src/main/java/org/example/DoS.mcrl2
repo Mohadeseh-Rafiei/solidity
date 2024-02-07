@@ -33,8 +33,8 @@ ad1 == ad2 = equal(ad1,ad2);
  Address highestBidder = 0x0000000000000000000000000000000000000000 ;
  Int highestBid = 0 ;
  }
- bid() =
-(msg.value>highestBid) ->
+ bid(balance:Int, value:Int, x:Int) =
+(value>highestBid) ->
 (bid_firstSuccess.(((call_transfer_EmptyFallback.EXAMPLE_TRANSFER_BODY!!!) +
 call_transfer_NoFallback.EXAMPLE_TRANSFER_BODY!!!) +
 call_transfer_Fallback.EXAMPLE_TRANSFER_BODY!!!))

@@ -5,7 +5,7 @@ contract DosAuction {
     address highestBidder = 0x0000000000000000000000000000000000000000;
     uint256 highestBid = 0;
 
-    function bid() public payable {
+    function bid(int x) public payable {
         require(msg.value > highestBid, "Need to be higher than highest bid");
 		if(highestBidder == 0x0000000000000000000000000000000000000000){
 			highestBidder = msg.sender;
