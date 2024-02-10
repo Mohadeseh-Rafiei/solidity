@@ -50,57 +50,57 @@ public class MCRL2DataTypesTranslator {
 
     private String getAddressDataSort() {
         return "sort Address;\n" +
-                "cons Normal, Attacker, Owner, null, Contract : Address ;\n" +
-                "map equal : Address#Address -> Bool;\n" +
-                "var ad1,ad2: Address;\n" +
-                "eqn\n" +
-                "equal(Normal, Normal) = true ;\n" +
-                "equal(Normal, Attacker) = false ;\n" +
-                "equal(Normal, Owner) = false ;\n" +
-                "equal(Normal, null) = false;\n" +
-                "equal(Normal, Contract) = false;\n" +
-                "equal(Attacker, Attacker) = true ;\n" +
-                "equal(Attacker, Normal) = false ;\n" +
-                "equal(Attacker, Owner) = false ;\n" +
-                "equal(Attacker, null) = false;\n" +
-                "equal(Attacker, Contract) = false ;\n" +
-                "equal(Owner, Owner) = true;\n" +
-                "equal(Owner, Normal) = false;\n" +
-                "equal(Owner, Attacker) = false ;\n" +
-                "equal(Owner, null) = false;\n" +
-                "equal(Owner, Contract) = false;\n" +
-                "equal(null, null) = true;\n" +
-                "equal(null, Normal) = false;\n" +
-                "equal(null, Attacker) = false;\n" +
-                "equal(null, Owner) = false;\n" +
-                "equal(null, Contract) = false;\n" +
-                "equal(Contract, Contract) = true;\n" +
-                "equal(Contract, Normal) = false ;\n" +
-                "equal(Contract, Attacker) = false ;\n" +
-                "equal(Contract, Owner) = false ;\n" +
-                "equal(Contract, null) = false;\n" +
-                "ad1 == ad2 = equal(ad1,ad2);\n";
+                "   cons Normal, Attacker, Owner, null, Contract : Address ;\n" +
+                "   map equal : Address#Address -> Bool;\n" +
+                "   var ad1,ad2: Address;\n" +
+                "   eqn\n" +
+                "   equal(Normal, Normal) = true ;\n" +
+                "   equal(Normal, Attacker) = false ;\n" +
+                "   equal(Normal, Owner) = false ;\n" +
+                "   equal(Normal, null) = false;\n" +
+                "   equal(Normal, Contract) = false;\n" +
+                "   equal(Attacker, Attacker) = true ;\n" +
+                "   equal(Attacker, Normal) = false ;\n" +
+                "   equal(Attacker, Owner) = false ;\n" +
+                "   equal(Attacker, null) = false;\n" +
+                "   equal(Attacker, Contract) = false ;\n" +
+                "   equal(Owner, Owner) = true;\n" +
+                "   equal(Owner, Normal) = false;\n" +
+                "   equal(Owner, Attacker) = false ;\n" +
+                "   equal(Owner, null) = false;\n" +
+                "   equal(Owner, Contract) = false;\n" +
+                "   equal(null, null) = true;\n" +
+                "   equal(null, Normal) = false;\n" +
+                "   equal(null, Attacker) = false;\n" +
+                "   equal(null, Owner) = false;\n" +
+                "   equal(null, Contract) = false;\n" +
+                "   equal(Contract, Contract) = true;\n" +
+                "   equal(Contract, Normal) = false ;\n" +
+                "   equal(Contract, Attacker) = false ;\n" +
+                "   equal(Contract, Owner) = false ;\n" +
+                "   equal(Contract, null) = false;\n" +
+                "   ad1 == ad2 = equal(ad1,ad2);\n";
     }
 
     public String getMappingDefinition(String mappingType, String mappedType){
         return "sort mapping ;\n" +
-                "cons empty : mapping ;\n" +
-                "add : " + mappingType + "#" + mappedType + "#mapping -> mapping;\n" +
-                "map\n" +
-                "retValue : " + mappingType + "#mapping -> " + mappedType + " ;\n" +
-                "search : " + mappingType + "#mapping -> Bool ;\n" +
-                "update: " + mappingType + "#" + mappedType + "#mapping -> mapping ;\n" +
-                "var\n" +
-                "array : mapping ;\n" +
-                "b, d : " + mappedType + " ;\n" +
-                "a, c : " + mappingType + ";\n" +
-                "eqn\n" +
-                "retValue(a, empty) = -1 ;\n" +
-                "retValue(a, add(c, b, array)) = if(a == c, b, retValue(a, array)) ;\n" +
-                "search(a, empty) = false;\n" +
-                "search(a, add(c, b, array)) = if(a == c, true, search(a, array));\n" +
-                "update(a, b, empty) = empty;\n" +
-                "update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));\n";
+                "   cons empty : mapping ;\n" +
+                "   add : " + mappingType + "#" + mappedType + "#mapping -> mapping;\n" +
+                "   map\n" +
+                "   retValue : " + mappingType + "#mapping -> " + mappedType + " ;\n" +
+                "   search : " + mappingType + "#mapping -> Bool ;\n" +
+                "   update: " + mappingType + "#" + mappedType + "#mapping -> mapping ;\n" +
+                "   var\n" +
+                "   array : mapping ;\n" +
+                "   b, d : " + mappedType + " ;\n" +
+                "   a, c : " + mappingType + ";\n" +
+                "   eqn\n" +
+                "   retValue(a, empty) = -1 ;\n" +
+                "   retValue(a, add(c, b, array)) = if(a == c, b, retValue(a, array)) ;\n" +
+                "   search(a, empty) = false;\n" +
+                "   search(a, add(c, b, array)) = if(a == c, true, search(a, array));\n" +
+                "   update(a, b, empty) = empty;\n" +
+                "   update(a, b, add(c, d, array)) = if(a == c, add(a, b, array),add(c, d, update(a, b, array)));\n";
     }
 
     private void translateAddress() throws Exception {

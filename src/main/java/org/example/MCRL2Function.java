@@ -1,6 +1,5 @@
 package org.example;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,7 +70,6 @@ public class MCRL2Function {
             if (child.findNode("require") != null) {
                 RequireCount++;
                 System.out.println("node with require statement founded:" + child.getText());
-                // todo: find correct parent of require
                 MCRL2Node parentOfRequire = child.getParent();
                 System.out.println("parent of require: " + parentOfRequire.getText());
                 String successBody = this.getSuccessBody(children , i, RequireCount);
@@ -88,7 +86,8 @@ public class MCRL2Function {
             MCRL2Node child = children.get(i);
             if (this.transferCallExists(child)) {
                 System.out.println("transfer call founded:" + child.getText());
-                text.append(this.translateTransferCall(child));
+                String address = this.removePayableModifier(getTransferAddress(child));
+                text.append(this.translateTransferCall(child, address));
             }
             if (child.findNode("require") != null) {
                 count++;
@@ -104,16 +103,37 @@ public class MCRL2Function {
         return text.toString();
     }
 
+    private String getTransferAddress(MCRL2Node node) {
+        if (node.findNode("send") != null) {
+            return node.findNode("send").getParent().getChildren().get(0).getText();
+        }
+        if (node.findNode("call") != null) {
+            return node.findNode("call").getParent().getChildren().get(0).getText();
+        }
+        // todo: check this case
+//        if (node.findNode("transferFrom") != null) {
+//            return node.findNode("transferFrom").getParent().getChildren().get(3).getText();
+//        }
+//        if (node.findNode("transfer") != null) {
+//            return node.findNode("transfer").getParent().getChildren().get(3).getText();
+//        }
+        return "";
+    }
+
+    private String removePayableModifier(String text) {
+        return text.replace("payable", "").replace("(", "").replace(")", "");
+    }
+
     private boolean transferCallExists(MCRL2Node node) {
         // todo: check other transfer calls
         return node.findNode("transfer") != null || node.findNode("send") != null || node.findNode("call") != null || node.findNode("transferFrom") != null;
     }
 
-    private String translateTransferCall(MCRL2Node node) {
+    private String translateTransferCall(MCRL2Node node, String address) {
         StringBuilder text = new StringBuilder();
-        text.append("((").append("call_transfer_EmptyFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
-                .append("call_transfer_NoFallback").append(".EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
-                .append("call_transfer_Fallback").append(".EXAMPLE_TRANSFER_BODY!!!").append("))\n");
+        text.append("((").append("call_transfer_EmptyFallback(").append(address).append(").EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
+                .append("call_transfer_NoFallback(").append(address).append(").EXAMPLE_TRANSFER_BODY!!!").append(") +\n")
+                .append("call_transfer_Fallback(").append(address).append(").EXAMPLE_TRANSFER_BODY!!!").append("))\n");
         return text.toString();
     }
 

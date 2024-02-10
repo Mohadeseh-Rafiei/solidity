@@ -1,43 +1,42 @@
 contract DosAuction {
  sort Address;
-cons Normal, Attacker, Owner, null, Contract : Address ;
-map equal : Address#Address -> Bool;
-var ad1,ad2: Address;
-eqn
-equal(Normal, Normal) = true ;
-equal(Normal, Attacker) = false ;
-equal(Normal, Owner) = false ;
-equal(Normal, null) = false;
-equal(Normal, Contract) = false;
-equal(Attacker, Attacker) = true ;
-equal(Attacker, Normal) = false ;
-equal(Attacker, Owner) = false ;
-equal(Attacker, null) = false;
-equal(Attacker, Contract) = false ;
-equal(Owner, Owner) = true;
-equal(Owner, Normal) = false;
-equal(Owner, Attacker) = false ;
-equal(Owner, null) = false;
-equal(Owner, Contract) = false;
-equal(null, null) = true;
-equal(null, Normal) = false;
-equal(null, Attacker) = false;
-equal(null, Owner) = false;
-equal(null, Contract) = false;
-equal(Contract, Contract) = true;
-equal(Contract, Normal) = false ;
-equal(Contract, Attacker) = false ;
-equal(Contract, Owner) = false ;
-equal(Contract, null) = false;
-ad1 == ad2 = equal(ad1,ad2);
- Address highestBidder = 0x0000000000000000000000000000000000000000 ;
+   cons Normal, Attacker, Owner, null, Contract : Address ;
+   map equal : Address#Address -> Bool;
+   var ad1,ad2: Address;
+   eqn
+   equal(Normal, Normal) = true ;
+   equal(Normal, Attacker) = false ;
+   equal(Normal, Owner) = false ;
+   equal(Normal, null) = false;
+   equal(Normal, Contract) = false;
+   equal(Attacker, Attacker) = true ;
+   equal(Attacker, Normal) = false ;
+   equal(Attacker, Owner) = false ;
+   equal(Attacker, null) = false;
+   equal(Attacker, Contract) = false ;
+   equal(Owner, Owner) = true;
+   equal(Owner, Normal) = false;
+   equal(Owner, Attacker) = false ;
+   equal(Owner, null) = false;
+   equal(Owner, Contract) = false;
+   equal(null, null) = true;
+   equal(null, Normal) = false;
+   equal(null, Attacker) = false;
+   equal(null, Owner) = false;
+   equal(null, Contract) = false;
+   equal(Contract, Contract) = true;
+   equal(Contract, Normal) = false ;
+   equal(Contract, Attacker) = false ;
+   equal(Contract, Owner) = false ;
+   equal(Contract, null) = false;
+   ad1 == ad2 = equal(ad1,ad2);
  Int highestBid = 0 ;
  }
  bid(balance:Int, highestBidder:Address, highestBid:Int, value:Int, addr:Address, x:Int) =
 (value>highestBid) ->
-(bid_firstSuccess.(((call_transfer_EmptyFallback.EXAMPLE_TRANSFER_BODY!!!) +
-call_transfer_NoFallback.EXAMPLE_TRANSFER_BODY!!!) +
-call_transfer_Fallback.EXAMPLE_TRANSFER_BODY!!!))
+(bid_firstSuccess.(((call_transfer_EmptyFallback(highestBidder).EXAMPLE_TRANSFER_BODY!!!) +
+call_transfer_NoFallback(highestBidder).EXAMPLE_TRANSFER_BODY!!!) +
+call_transfer_Fallback(highestBidder).EXAMPLE_TRANSFER_BODY!!!))
 (payable(highestBidder).send(highestBid)) ->
 (bid_secondSuccess.())
 <> bid_secondFail.EXAMPLE_FUNCTION_CALL!!!))

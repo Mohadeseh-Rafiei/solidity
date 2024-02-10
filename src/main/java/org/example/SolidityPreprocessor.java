@@ -87,8 +87,8 @@ public class SolidityPreprocessor {
 
     public static void main(String[] args) {
         // Sample Solidity code
-        String filePath = "src/main/java/org/example/DoS.sol";
-        String destinationPath = "src/main/java/org/example/DoS.mcrl2";
+        String filePath = "src/main/java/org/example/DAO.sol";
+        String destinationPath = "src/main/java/org/example/DAO.mcrl2";
         try {
             String solidityCode = new String(Files.readAllBytes(Paths.get(filePath)));
 

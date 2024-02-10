@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +13,7 @@ public class MCRL2FunctionTranslator {
 
     public MCRL2AST getModifiedTree() throws Exception {
         this.translateFunction();
+        this.removeContractVariables();
         return this.ast;
     }
 
@@ -33,12 +33,13 @@ public class MCRL2FunctionTranslator {
                 }
                 String functionName = this.extractFunctionName(foundedNode.getParent());
                 System.out.println("function name: " + functionName);
-                // todo : how to calculate args and types?
-                MCRL2Node functionNode = foundedNode.getParent().getParent();
+                MCRL2Node functionNode = this.getFunctionNode(foundedNode);
                 replaceValueAndAddressInMSG(functionNode);
 
                 List<String> args = getFunctionArgs(functionNode);
+                System.out.println("args: " + args);
                 List<String> types = getArgsTypes(functionNode);
+                System.out.println("types: " + types);
                 MCRL2Function translatedFunction = new MCRL2Function(functionName, args, types,foundedNode.getParent().getParent());
 
                 MCRL2Node parent = functionNode.getParent();
@@ -48,6 +49,14 @@ public class MCRL2FunctionTranslator {
                 this.ast.removeNode(functionNode);
             }
         }
+    }
+
+    private MCRL2Node getFunctionNode(MCRL2Node node) {
+        if (node.getChildren().size() > 0 && Objects.equals(node.getChildren().get(0).getText(), "function")) {
+            System.out.println("function node for function: " + node.getParent().getText());
+            return node.getParent();
+        }
+        return this.getFunctionNode(node.getParent());
     }
 
     private void replaceValueAndAddressInMSG(MCRL2Node node) throws Exception {
@@ -112,6 +121,7 @@ public class MCRL2FunctionTranslator {
         args.add("balance");
         args.addAll(getContractVariables(node.getParent()));
         List<MCRL2Node> children = node.getChildren().get(1).getChildren();
+        System.out.println("children for  extracting args: " + node.getChildren().get(1).getText());
 
         for (int i = 0; i < children.size(); i++) {
             if(Objects.equals(children.get(i).getText(), ",") || Objects.equals(children.get(i).getText(), "(") || Objects.equals(children.get(i).getText(), ")")) {
@@ -143,11 +153,12 @@ public class MCRL2FunctionTranslator {
     }
 
     private List<String> getContractVariables(MCRL2Node node) {
-        List<MCRL2Node> children = node.getChildren();
+        MCRL2Node contractNode = this.getContractNode(node);
+        List<MCRL2Node> children = contractNode.getChildren();
         List<String> args = new ArrayList<>();
 
         for (int i = 3; i < children.size(); i++) {
-            if(children.get(i).getChildren().size() > 1 && children.get(i).getChildren().get(0).getText().contains("function")) {
+            if(children.get(i).getText().contains("function")) {
                 continue;
             }
 
@@ -155,20 +166,37 @@ public class MCRL2FunctionTranslator {
                 continue;
             }
 
-            System.out.println("contract variable: " + children.get(i).getChildren().get(0).getChildren().get(1).getText());
-            args.add(children.get(i).getChildren().get(0).getChildren().get(1).getText());
+            int size = children.get(i).getChildren().get(0).getChildren().size();
+            if(size < 2) {
+                continue;
+            }
+
+            String text = children.get(i).getChildren().get(0).getChildren().get(1).getText();
+            if (text.equals("public")) {
+                text = children.get(i).getChildren().get(0).getChildren().get(2).getText();
+            }
+            System.out.println("contract variable: " + text);
+            args.add(text);
 
         }
 
         return  args;
     }
 
+    private MCRL2Node getContractNode(MCRL2Node node) {
+        if (node.getChildren().size() > 0 && Objects.equals(node.getChildren().get(0).getText(), "contract")) {
+            return node;
+        }
+        return this.getContractNode(node.getParent());
+    }
+
     private List<String> getContractVariableTypes(MCRL2Node node) {
-        List<MCRL2Node> children = node.getChildren();
+        MCRL2Node contractNode = this.getContractNode(node);
+        List<MCRL2Node> children = contractNode.getChildren();
         List<String> types = new ArrayList<>();
 
         for (int i = 3; i < children.size(); i++) {
-            if(children.get(i).getChildren().size() > 1 && children.get(i).getChildren().get(0).getText().contains("function")) {
+            if(children.get(i).getText().contains("function")) {
                 continue;
             }
 
@@ -176,14 +204,44 @@ public class MCRL2FunctionTranslator {
                 continue;
             }
 
-            System.out.println("contract variable: " + children.get(i).getChildren().get(0).getChildren().get(0).getText());
-            types.add(children.get(i).getChildren().get(0).getChildren().get(0).getText());
+            if(children.get(i).getChildren().get(0).getChildren().size() < 2) {
+                continue;
+            }
 
+            MCRL2Node typeNode = children.get(i).getChildren().get(0).getChildren().get(0);
+            if(typeNode.getText().contains("mapping")) {
+                System.out.println("contract variable type: mapping");
+                types.add("mapping");
+            } else {
+                System.out.println("contract variable type: " + typeNode.getText());
+                types.add(typeNode.getText());
+            }
         }
 
         return types;
     }
 
+    private void removeContractVariables() {
+        MCRL2Node contractNode = this.getContractNode(this.ast.getRoot().getChildren().get(0));
+        List<MCRL2Node> children = contractNode.getChildren();
+
+        for (int i = 3; i < children.size(); i++) {
+            System.out.println("contract variable to check for remove: " + children.get(i).getText());
+            if(children.get(i).getText().contains("function")) {
+                continue;
+            }
+
+            if(children.get(i).getChildren().size() == 0) {
+                continue;
+            }
+
+            if(children.get(i).getChildren().get(0).getChildren().size() < 2) {
+                continue;
+            }
+            System.out.println("contract variable to remove: " + children.get(i).getText());
+            this.ast.removeNode(children.get(i));
+        }
+    }
 }
 
 
