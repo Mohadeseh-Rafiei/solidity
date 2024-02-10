@@ -65,7 +65,7 @@ public class MCRL2FunctionTranslator {
         }
 
         while (true) {
-            MCRL2Node foundedNode = node.findNode("msg.addr");
+            MCRL2Node foundedNode = node.findNode("msg.sender");
             if(foundedNode == null) {
                 break;
             }
@@ -146,7 +146,7 @@ public class MCRL2FunctionTranslator {
         List<MCRL2Node> children = node.getChildren();
         List<String> args = new ArrayList<>();
 
-        for (int i = 0; i < children.size(); i++) {
+        for (int i = 3; i < children.size(); i++) {
             if(children.get(i).getChildren().size() > 1 && children.get(i).getChildren().get(0).getText().contains("function")) {
                 continue;
             }
@@ -155,8 +155,8 @@ public class MCRL2FunctionTranslator {
                 continue;
             }
 
-            System.out.println("contract variable: " + children.get(i).getText());
-            args.add(children.get(i).getChildren().get(1).getText());
+            System.out.println("contract variable: " + children.get(i).getChildren().get(0).getChildren().get(1).getText());
+            args.add(children.get(i).getChildren().get(0).getChildren().get(1).getText());
 
         }
 
@@ -165,18 +165,23 @@ public class MCRL2FunctionTranslator {
 
     private List<String> getContractVariableTypes(MCRL2Node node) {
         List<MCRL2Node> children = node.getChildren();
-        List<String> args = new ArrayList<>();
+        List<String> types = new ArrayList<>();
 
-        for (int i = 0; i < children.size(); i++) {
+        for (int i = 3; i < children.size(); i++) {
             if(children.get(i).getChildren().size() > 1 && children.get(i).getChildren().get(0).getText().contains("function")) {
                 continue;
             }
-            System.out.println("contract types: " + children.get(i).getChildren().get(1).getText());
-            args.add(children.get(i).getChildren().get(0).getText());
+
+            if(children.get(i).getChildren().size() == 0) {
+                continue;
+            }
+
+            System.out.println("contract variable: " + children.get(i).getChildren().get(0).getChildren().get(0).getText());
+            types.add(children.get(i).getChildren().get(0).getChildren().get(0).getText());
 
         }
 
-        return args;
+        return types;
     }
 
 }
